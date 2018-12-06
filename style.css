@@ -70,3 +70,14 @@ nav ul li.active {
     background-repeat: no-repeat;
     background-color: black;
 }
+
+h2 {
+    color: crimson;
+    background-color: #E2CE6F;
+    font-family: "Brush Script MT", Brush Script Std, cursive;
+    border-style: groove;
+    border: 2px solid crimson;
+    border-radius: 20px;
+    text-align: center;
+    padding: 10px 12px;
+}
