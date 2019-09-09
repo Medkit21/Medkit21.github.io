@@ -1,49 +1,15 @@
-// Project Title
-// Your Name
-// Date
-//
-// Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// Line Art Demo
+// Therrill Strongarm
+// September 9, 2019
 
-let redAmount = 0;
-let redChangeAmount = 1;
-let greenAmount = 100;
-let greenChangeAmount = 2;
-let blueAmount = 200;
-let blueChangeAmount = 1;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  background(0, 0, 0);
+  background(255);
 }
 
 function draw() {
-  fill(redAmount, greenAmount, blueAmount);
-  noStroke()
-  if (mouseIsPressed === true){
-    ellipse(mouseX, mouseY, 50, 50);
-  }
-  
-  redAmount += redChangeAmount;
-  greenAmount += greenChangeAmount;
-  blueAmount += blueChangeAmount;
-
-  if (redAmount >= 255) {
-    redChangeAmount *= -1;
-  }
-  if (redAmount <= 0) {
-    redChangeAmount *= -1;
-  }
-  if (greenAmount >= 255) {
-    greenChangeAmount *= -1;
-  }
-  if (greenAmount <= 0) {
-    greenChangeAmount *= -1;
-  }
-  if (blueAmount >= 255) {
-    blueChangeAmount *= -1;
-  }
-  if (blueAmount <= 0) {
-    blueChangeAmount *= -1;
+  if (mouseIsPressed === true) {
+    line(mouseX, mouseY, pmouseX, pmouseY);
   }
 }
