@@ -1,6 +1,6 @@
 // Interactive Scene Project
-// Your Name
-// Date
+// Therrill Strongarm
+// September 11, 2019
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
