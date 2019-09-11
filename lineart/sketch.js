@@ -9,6 +9,7 @@ function setup() {
 }
 
 function draw() {
+  if (keyPressed(1))
   if (mouseIsPressed === true) {
     line(mouseX, mouseY, pmouseX, pmouseY);
   }
