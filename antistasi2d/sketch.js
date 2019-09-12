@@ -9,13 +9,13 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   background(225);
   fill(200);
-  rect(0, 0, windowWidth, windowHeight / 8)
+  rect(0, 0, windowWidth, windowHeight / 8);
 }
 
 function draw() {
-  fill(redAmount, greenAmount, blueAmount);
+  fill(0);
   noStroke();
   if (mouseIsPressed === true){
-    ellipse(mouseX, mouseY, 50, 50);
+    image("/assets/civilian/civilian.png", mouseX, mouseY, 50, 50);
   }
 }
