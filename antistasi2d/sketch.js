@@ -16,6 +16,6 @@ function draw() {
   fill(0);
   noStroke();
   if (mouseIsPressed === true){
-    image("/assets/civilian/civilian.png", mouseX, mouseY, 50, 50);
+    ellipse(mouseX, mouseY, 50, 50)
   }
 }
