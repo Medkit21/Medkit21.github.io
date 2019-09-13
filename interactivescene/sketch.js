@@ -7,7 +7,7 @@
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  background(225);
+  background(0, 100, 200);
   fill(200);
   rect(0, 0, windowWidth, windowHeight / 8);
 }
