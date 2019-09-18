@@ -5,8 +5,34 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-class player {
+class Vector2
+{
+  constructor(x, y)
+  {
+    this.x = x;
+    this.y = y;
+  }
 
+  magnitude()
+  {
+    return Math.sqrt((this.x * this.x) + (this.y * this.y));
+  }
+
+  normalize()
+  {
+    let mag = this.magnitude();
+
+    this.x /= mag;
+    this.y /= mag;
+  }
+}
+
+class Projectile
+{
+  constructor(x, y)
+  {
+
+  }
 }
 
 
@@ -14,7 +40,11 @@ let playerX;
 let playerY;
 let playerSize = 50;
 let gameStarted;
+let playerHealth;
+let wave;
 
+let bulletX;
+let bulletY;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -40,18 +70,19 @@ function drawTitleScreen() {
   text("Use WASD to move and click to shoot.", windowWidth/2, 200)
 
   text("Press M to begin/restart", windowWidth/2, windowHeight - windowHeight/20);
-
 }
 
 function startGame() {
   playerX = windowWidth/2;
   playerY = windowHeight/2;
 
+  wave = 1;
+  playerHealth = 100;
   gameStarted = true;
 }
 
 function drawGame() {
-  background(0, 200, 100);
+  background(200);
   
   playerMovement();
   
@@ -60,9 +91,35 @@ function drawGame() {
   ellipse(playerX, playerY, playerSize, playerSize);
 }
 
+function drawHUD() {
+  textSize(20);
+  if (playerHealth >= 70) {
+    fill(0);
+    text("Player Health: ", windowWidth/20, 20)
+    fill(0, 200, 0);
+    text(playerHealth, windowWidth/20 + 80, 20)
+  }
+  if (playerHealth < 70 && playerHealth >= 30) {
+    fill(0);
+    text("Player Health: ", windowWidth/20, 20)
+    fill(255,69,0);
+    text(playerHealth, windowWidth/20 + 80, 20)
+  }
+  if (playerHealth < 30) {
+    fill(0);
+    text("Player Health: ", windowWidth/15, 20)
+    fill(255, 0, 0);
+    text(playerHealth, windowWidth/20 + 80, 20)
+  }
+  fill(0);
+  text("Wave: " + wave, windowWidth/20 + 140, 20)
+}
+
 function draw() {
   if (gameStarted === true) {
     drawGame();
+    fireGun();
+    drawHUD();
   }
   else {
     drawTitleScreen();
@@ -124,4 +181,17 @@ function keyPressed() {
     startGame();
     print("Your Mome");
   }
+}
+
+function fireGun() {
+  ellipse(bulletX, bulletY, 20, 20);
+  console.log(bulletX, bulletY);
+  if (bulletY <= height) {
+    bulletY -= 5;
+  }
+}
+
+function mouseClicked() {
+  bulletX = playerX;
+  bulletY = playerY;
 }
