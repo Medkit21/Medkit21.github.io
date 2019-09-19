@@ -13,6 +13,11 @@ class Vector2
     this.y = y;
   }
 
+  add(vector)
+  {
+    return new Vector2(this.x + vector.x, this.y + vector.y);
+  }
+
   magnitude()
   {
     return Math.sqrt((this.x * this.x) + (this.y * this.y));
@@ -29,12 +34,27 @@ class Vector2
 
 class Projectile
 {
-  constructor(x, y)
+  constructor(position, velocity, radius)
   {
+    this.position = position;
+    this.velocity = velocity;
+    this.radius = radius;
+  }
 
+  update() 
+  {
+    this.position = this.position.add(this.velocity);
+    this.render();
+
+    return (this.position.x < 0 || this.position.y < 0 || this.position.x > windowWidth || this.position.y > windowHeight);
+  }
+
+  render() 
+  {
+    fill(0);
+    ellipse(this.position.x, this.position.y, this.radius * 2);
   }
 }
-
 
 let playerX;
 let playerY;
@@ -46,11 +66,14 @@ let wave;
 let bulletX;
 let bulletY;
 
+let proj = new Array();
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   background(0, 200, 200);
   playerX = windowWidth/2;
   playerY = windowHeight/2;
+  proj.push(new Projectile(new Vector2(0,0), new Vector2(1,1), 20));
 }
 
 function drawTitleScreen() {
@@ -76,13 +99,18 @@ function startGame() {
   playerX = windowWidth/2;
   playerY = windowHeight/2;
 
-  wave = 1;
+  wave = 2;
   playerHealth = 100;
   gameStarted = true;
 }
 
 function drawGame() {
   background(200);
+
+  for (let i = 0; i < proj.length; i++)
+  {
+    proj[i].update();
+  }
   
   playerMovement();
   
@@ -112,7 +140,7 @@ function drawHUD() {
     text(playerHealth, windowWidth/20 + 80, 20)
   }
   fill(0);
-  text("Wave: " + wave, windowWidth/20 + 140, 20)
+  text("Wave: " + wave, windowWidth/20 + 150, 20)
 }
 
 function draw() {
@@ -192,6 +220,5 @@ function fireGun() {
 }
 
 function mouseClicked() {
-  bulletX = playerX;
-  bulletY = playerY;
+  proj.push(new Projectile(new Vector2(playerX,playerY), new Vector2(mouseX-playerX,mouseY-playerY), 20));
 }
