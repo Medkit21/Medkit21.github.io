@@ -1,49 +1,75 @@
-// Project Title
-// Your Name
-// Date
+// Orange Eating
+// Blazingsky Carrier 
+// Sep 13, 2019
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let redAmount = 0;
-let redChangeAmount = 1;
-let greenAmount = 100;
-let greenChangeAmount = 2;
-let blueAmount = 200;
-let blueChangeAmount = 1;
+let noteA, noteB, noteC, noteD, noteE, noteF, noteG
+
+function preload(){
+  soundFormats('mp3')
+  noteA = loadSound('assets/noteA.mp3'), noteB = loadSound('assets/noteB.mp3'), noteC = loadSound('assets/noteC.mp3'), noteD = loadSound('assets/noteD.mp3')
+  noteE = loadSound('assets/noteE.mp3'), noteF = loadSound('assets/noteF.mp3'), noteG = loadSound('assets/noteG.mp3')
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  background(0, 0, 0);
 }
 
-function draw() {
-  fill(redAmount, greenAmount, blueAmount);
-  noStroke()
-  if (mouseIsPressed === true){
-    ellipse(mouseX, mouseY, 50, 50);
-  }
-  
-  redAmount += redChangeAmount;
-  greenAmount += greenChangeAmount;
-  blueAmount += blueChangeAmount;
+function draw(){
+  background(125);
+  keyboardnotes();
+}
 
-  if (redAmount >= 255) {
-    redChangeAmount *= -1;
-  }
-  if (redAmount <= 0) {
-    redChangeAmount *= -1;
-  }
-  if (greenAmount >= 255) {
-    greenChangeAmount *= -1;
-  }
-  if (greenAmount <= 0) {
-    greenChangeAmount *= -1;
-  }
-  if (blueAmount >= 255) {
-    blueChangeAmount *= -1;
-  }
-  if (blueAmount <= 0) {
-    blueChangeAmount *= -1;
+function windowResized(){
+  setup();
+}
+
+// corresponds with a sound of the piano and shows the note pressed on the screen
+
+function keyboardnotes(){
+  if (keyIsPressed == true);{
+    if (keyCode === 65);{
+      text(keyCode, 33, 65);
+      noteA.setVolume(0.5)
+      noteA.play();
+    }
+    if (keyCode === 66);{
+      noteB.play();
+      text(keyCode, 33, 65);
+      noteB.setVolume(0.5)
+      noteB.play();
+    }
+    if (keyCode === 67);{
+      noteC.play();
+      text(keyCode, 33, 65);
+      noteC.setVolume(0.5)
+      noteC.play();
+    }
+    if (keyCode === 68);{
+      noteD.play();
+      text(keyCode, 33, 65);
+      noteD.setVolume(0.5)
+      noteD.play();
+    }
+    if (keyCode === 69);{
+      noteE.play();
+      text(keyCode, 33, 65);
+      noteE.setVolume(0.5)
+      noteE.play();
+    }
+    if (keyCode === 70);{
+      noteF.play();
+      text(keyCode, 33, 65);
+      noteF.setVolume(0.5)
+      noteF.play();
+    }
+    if (keyCode === 71);{
+      noteG.play();
+      text(keyCode, 33, 65);
+      noteG.setVolume(0.5)
+      noteG.play();
+    }
   }
 }
