@@ -2,8 +2,11 @@
 // Therrill Strongarm
 // September 11, 2019
 //
+// Tim helped me with classes Vector2 and Projectile(thanks Tim! :D)
+//
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
+
 
 class Vector2
 {
@@ -23,22 +26,25 @@ class Vector2
     return Math.sqrt((this.x * this.x) + (this.y * this.y));
   }
 
-  normalize()
+  normalized()
   {
     let mag = this.magnitude();
-
-    this.x /= mag;
-    this.y /= mag;
+    return new Vector2(this.x / mag, this.y / mag);
+  }
+  multiply(scale)
+  {
+    return new Vector2(this.x * scale, this.y * scale);
   }
 }
 
 class Projectile
 {
-  constructor(position, velocity, radius)
+  constructor(position, velocity, radius, fill)
   {
     this.position = position;
     this.velocity = velocity;
     this.radius = radius;
+    this.fill = fill;
   }
 
   update() 
@@ -51,7 +57,7 @@ class Projectile
 
   render() 
   {
-    fill(0);
+    fill(255,140,0);
     ellipse(this.position.x, this.position.y, this.radius * 2);
   }
 }
@@ -63,9 +69,6 @@ let gameStarted;
 let playerHealth;
 let wave;
 
-let bulletX;
-let bulletY;
-
 let proj = new Array();
 
 function setup() {
@@ -73,7 +76,6 @@ function setup() {
   background(0, 200, 200);
   playerX = windowWidth/2;
   playerY = windowHeight/2;
-  proj.push(new Projectile(new Vector2(0,0), new Vector2(1,1), 20));
 }
 
 function drawTitleScreen() {
@@ -102,6 +104,8 @@ function startGame() {
   wave = 2;
   playerHealth = 100;
   gameStarted = true;
+
+  print("Game has started successfully");
 }
 
 function drawGame() {
@@ -110,11 +114,12 @@ function drawGame() {
   for (let i = 0; i < proj.length; i++)
   {
     proj[i].update();
+    console.log(i);
   }
   
   playerMovement();
   
-  fill(0);
+  fill(0, 0, 255);
   noStroke();
   ellipse(playerX, playerY, playerSize, playerSize);
 }
@@ -146,7 +151,6 @@ function drawHUD() {
 function draw() {
   if (gameStarted === true) {
     drawGame();
-    fireGun();
     drawHUD();
   }
   else {
@@ -204,21 +208,14 @@ function playerMovement() {
   }
 }
 
+// Pressing M begins the game
 function keyPressed() {
   if (keyCode === 77) { // m
     startGame();
-    print("Your Mome");
   }
 }
 
-function fireGun() {
-  ellipse(bulletX, bulletY, 20, 20);
-  console.log(bulletX, bulletY);
-  if (bulletY <= height) {
-    bulletY -= 5;
-  }
-}
-
+// Upon clicking the left mouse button it will create a projectile
 function mouseClicked() {
-  proj.push(new Projectile(new Vector2(playerX,playerY), new Vector2(mouseX-playerX,mouseY-playerY), 20));
+  proj.push(new Projectile(new Vector2(playerX,playerY), new Vector2(mouseX-playerX,mouseY-playerY).normalized().multiply(10), 10));
 }
