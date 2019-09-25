@@ -5,12 +5,17 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let noteA, noteB, noteC, noteD, noteE, noteF, noteG
+let noteA;
+let noteB;
+let noteC;
+let noteD;
+let noteE;
+let noteF;
+let noteG;
 
 function preload(){
-  soundFormats('mp3')
-  noteA = loadSound('assets/noteA.mp3'), noteB = loadSound('assets/noteB.mp3'), noteC = loadSound('assets/noteC.mp3'), noteD = loadSound('assets/noteD.mp3')
-  noteE = loadSound('assets/noteE.mp3'), noteF = loadSound('assets/noteF.mp3'), noteG = loadSound('assets/noteG.mp3')
+  noteA = loadSound('assets/noteA.mp3'), noteB = loadSound('assets/noteB.mp3'), noteC = loadSound('assets/noteC.mp3'), noteD = loadSound('assets/noteD.mp3');
+  noteE = loadSound('assets/noteE.mp3'), noteF = loadSound('assets/noteF.mp3'), noteG = loadSound('assets/noteG.mp3');
 }
 
 function setup() {
@@ -23,7 +28,7 @@ function draw(){
 }
 
 function windowResized(){
-  setup();
+  resizeCanvas(windowWidth, windowHeight);
 }
 
 // corresponds with a sound of the piano and shows the note pressed on the screen

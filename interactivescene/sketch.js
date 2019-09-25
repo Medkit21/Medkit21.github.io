@@ -62,6 +62,36 @@ class Projectile
   }
 }
 
+class Enemy
+{
+  constructor(position, velocity, health, radius)
+  {
+    this.position = position;
+    this.velocity = velocity;
+    this.health = health;
+    this.radius = radius;
+  }
+
+  update()
+  {
+    this.position = this.position.add(this.velocity);
+    this.render();
+
+    return (this.position.x < 0 || this.position.y < 0 || this.position.x > windowWidth || this.position.y > windowHeight);
+  }
+
+  shoot()
+  {
+    enemyProj.push(new Projectile(new Vector2(this.position.x,this.position.y), new Vector2(playerX-this.position.x,playerY-this.position.y).normalized().multiply(5), 10));
+  }
+
+  render()
+  {
+    fill(0, 255, 0);
+    ellipse(this.position.x, this.position.y, this.radius * 2);
+  }
+}
+
 let playerX;
 let playerY;
 let playerSize = 50;
@@ -70,6 +100,8 @@ let playerHealth;
 let wave;
 
 let proj = new Array();
+let enemies = new Array();
+let enemyProj = new Array();
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -101,7 +133,7 @@ function startGame() {
   playerX = windowWidth/2;
   playerY = windowHeight/2;
 
-  wave = 2;
+  wave = 1;
   playerHealth = 100;
   gameStarted = true;
 
@@ -111,17 +143,22 @@ function startGame() {
 function drawGame() {
   background(200);
 
+  for (let i = 0; i < 7 + wave * random(1.5, 2.5); i++)
+	{
+		enemies.push(new Enemy(new Vector2(windowWidth/2, windowHeight/2), new Vector2(1.1, 1.1), 10, 50));
+	}
+
   for (let i = 0; i < proj.length; i++)
   {
     proj[i].update();
     console.log(i);
   }
   
-  playerMovement();
+  // playerMovement();
   
-  fill(0, 0, 255);
-  noStroke();
-  ellipse(playerX, playerY, playerSize, playerSize);
+  // fill(0, 0, 255);
+  // noStroke();
+  // ellipse(playerX, playerY, playerSize, playerSize);
 }
 
 function drawHUD() {
@@ -215,7 +252,7 @@ function keyPressed() {
   }
 }
 
-// Upon clicking the left mouse button it will create a projectile
+// Upon clicking the left mouse button it will create a projectile towards the mouse position
 function mouseClicked() {
   proj.push(new Projectile(new Vector2(playerX,playerY), new Vector2(mouseX-playerX,mouseY-playerY).normalized().multiply(10), 10));
 }
