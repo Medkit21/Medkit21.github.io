@@ -50,7 +50,9 @@ class Projectile
   update() 
   {
     this.position = this.position.add(this.velocity);
-    this.render();
+    if (this.position.x > 0 && this.position.x < windowWidth && this.position.y > 0 && this.position.y < windowHeight) {
+      this.render();
+    }
 
     return (this.position.x < 0 || this.position.y < 0 || this.position.x > windowWidth || this.position.y > windowHeight);
   }
@@ -70,14 +72,41 @@ class Enemy
     this.velocity = velocity;
     this.health = health;
     this.radius = radius;
+    this.shootFrames = 0;
   }
 
   update()
   {
     this.position = this.position.add(this.velocity);
+    
     this.render();
 
-    return (this.position.x < 0 || this.position.y < 0 || this.position.x > windowWidth || this.position.y > windowHeight);
+    this.shootFrames++;
+
+		if (this.shootFrames > 200)
+		{
+			this.shootFrames = floor(random(0, 50));
+
+			this.shoot();
+    }
+    if (this.position.x < 0 + this.radius)
+		{
+			this.velocity.x = Math.abs(this.velocity.x);
+		}
+		if (this.position.y < 0 + this.radius)
+		{
+			this.velocity.y = Math.abs(this.velocity.y);
+		}
+		if (this.position.x > windowWidth - this.radius)
+		{
+			this.velocity.x = -Math.abs(this.velocity.x);
+		}
+		if (this.position.y > windowHeight - this.radius)
+		{
+			this.velocity.y = -Math.abs(this.velocity.y);
+		}
+
+    //return (this.position.x < 0 || this.position.y < 0 || this.position.x > windowWidth || this.position.y > windowHeight);
   }
 
   shoot()
@@ -108,8 +137,10 @@ function setup() {
   background(0, 200, 200);
   playerX = windowWidth/2;
   playerY = windowHeight/2;
+  
 }
 
+// Displays the Title Screen
 function drawTitleScreen() {
   background(0, 200, 200);
   textSize(40);
@@ -129,38 +160,51 @@ function drawTitleScreen() {
   text("Press M to begin/restart", windowWidth/2, windowHeight - windowHeight/20);
 }
 
+// Starts the game
 function startGame() {
   playerX = windowWidth/2;
   playerY = windowHeight/2;
 
-  wave = 1;
+  wave = 0;
   playerHealth = 100;
   gameStarted = true;
+
+  spawnWave();
 
   print("Game has started successfully");
 }
 
+// Displays the game itself
 function drawGame() {
   background(200);
-
-  for (let i = 0; i < 7 + wave * random(1.5, 2.5); i++)
-	{
-		enemies.push(new Enemy(new Vector2(windowWidth/2, windowHeight/2), new Vector2(1.1, 1.1), 10, 50));
-	}
 
   for (let i = 0; i < proj.length; i++)
   {
     proj[i].update();
-    console.log(i);
+  }
+  for (let i = 0; i < enemyProj.length; i++)
+  {
+    enemyProj[i].update();
+  }
+  for (let i = 0; i < enemies.length; i++)
+  {
+    enemies[i].update();
+  }
+
+  if (enemies.length <= wave * 2 + 2)
+	{
+		spawnWave();
   }
   
-  // playerMovement();
+  playerMovement();
   
-  // fill(0, 0, 255);
-  // noStroke();
-  // ellipse(playerX, playerY, playerSize, playerSize);
+  fill(0, 0, 255);
+  noStroke();
+  ellipse(playerX, playerY, playerSize, playerSize);
+
 }
 
+// Draws the HUD
 function drawHUD() {
   textSize(20);
   if (playerHealth >= 70) {
@@ -199,7 +243,7 @@ function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
 
-
+// The function for the player movement
 function playerMovement() {
   if (keyIsPressed) {
     if(keyIsDown(87)) { // w
@@ -242,6 +286,16 @@ function playerMovement() {
         }
       }
     }
+  }
+}
+
+// this function spawns the enemies
+function spawnWave() {
+  wave++;
+
+  for (let i = 0; i < 7 + wave * random(1.5, 2.5); i++)
+	{
+    enemies.push(new Enemy(new Vector2(random(0, windowWidth), random(0, windowHeight)), new Vector2(random(0, windowWidth * 0.2), random(0, windowHeight * 0.2)).normalized().multiply(5), 10, 15));
   }
 }
 
