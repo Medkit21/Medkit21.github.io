@@ -11,11 +11,7 @@ let dx;
 let dy;
 let radius = 100;
 let rectSize = 100;
-let mode = "circle";
-
-function preload() {
-
-}
+let state = "menu";
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -29,13 +25,50 @@ function setup() {
 function draw() {
   background(255);
 
-  moveShape();
-
-  if (mode === "circle") {
-    displayCircle();
+  if (state === "menu") {
+    showMenu();
+    checkIfButtonClicked();
   }
-  if (mode === "rectangle") {
+  else if (state === "circle") {
+    displayCircle();
+    moveShape();
+  }
+  else if (state === "rectangle") {
     displayRectangle();
+    moveShape();
+  }
+}
+
+function showMenu() {
+  // Show rectangle button
+  rectMode(CENTER);
+  fill(200, 0, 0);
+  rect(windowWidth/2, windowHeight/2 - 100, 400, 150);
+  textAlign(CENTER);
+  textSize(50);
+  fill(0);
+  text("Rectangle", windowWidth/2, windowHeight/2 - 90)
+
+  // Show Circle button
+  rectMode(CENTER);
+  fill(200, 0, 0);
+  rect(windowWidth/2, windowHeight/2 + 100, 400, 150);
+  textAlign(CENTER);
+  textSize(50);
+  fill(0);
+  text("Circle", windowWidth/2, windowHeight/2 + 110)
+
+}
+
+function checkIfButtonClicked() {
+  if (mouseIsPressed) {
+    // Check for Rectangle Button
+    if (mouseX > width/2 - 200 && mouseX < width/2 + 200 && mouseY > height/2 - 100 - 75 && mouseY < height/2 - 100 + 75) {
+      state = "rectangle";
+    }
+    if (mouseX > width/2 - 200 && mouseX < width/2 + 200 && mouseY > height/2 + 100 - 75 && mouseY < height/2+ 100  + 75) {
+      state = "circle";
+    }
   }
 }
 
@@ -56,18 +89,20 @@ function displayCircle() {
   if (y > height - radius/2 || y < 0 + radius/2) {
     dy *= -1;
   }
+
   fill(0);
   ellipse(x, y, radius, radius)
 }
 
 function displayRectangle() {
   //bounce if needed
-  if (x > width - rectSize || x < 0) {
+  if (x > width - rectSize/2 || x < 0) {
     dx *= -1;
   }
-  if (y > height - rectSize || y < 0) {
+  if (y > height - rectSize/2 || y < 0) {
     dy *= -1;
   }
+
   fill(0);
   rect(x, y, rectSize, rectSize);
 }
