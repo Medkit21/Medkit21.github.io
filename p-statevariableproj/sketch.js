@@ -35,92 +35,86 @@ class Vector2
   }
 }
 
-class Sector 
+class Sector // Template for a Sector
 {
-  constructor(position, stability, manpower, supplies) 
+  constructor(position, size, development, manpower, defence, attack)
   {
     this.position = position;
-    this.stability = stability;
+    this.size = size;
+    this.development = development;
     this.manpower = manpower;
-    this.supplies = supplies;
-  }
-}
-
-class GrnSector
-{
-  constructor(position, radius, stability, manpower, supplies, strength, faction)
-  {
-    this.position = position;
-    this.radius = radius;
-    this.stability = stability;
-    this.manpower = manpower;
-    this.supplies = supplies;
-    this.strength = strength;
-    this.faction = faction;
+    this.defence = defence;
+    this.attack = attack;
   }
   update()
   {
-    return (this.position.x, this.position.y);
+    this.render();
   }
   render()
   {
-    fill(0,255,0);
-    ellipse(this.position.x, this.position.y, radius);
+    rect(this.position.x, this.position. y, this.size, this.size);
   }
 }
 
-class BluSector extends Sector
+class LandSector extends Sector
 {
-  constructor(position, stability, manpower, supplies, strength)
+  update()
   {
-    this.position = position;
-    this.stability = stability;
-    this.manpower = manpower;
-    this.supplies = supplies;
-    this.strength = strength;
+    this.render();
   }
   render()
   {
-
+    fill(0, 255, 0);
+    rect(this.position.x, this.position. y, this.size, this.size);
   }
 }
-class OpfSector extends Sector
+
+class WaterSector extends Sector
 {
-  constructor(position, stability, manpower, supplies, strength, faction)
+  update()
   {
-    this.position = position;
-    this.stability = stability;
-    this.manpower = manpower;
-    this.supplies = supplies;
-    this.strength = strength;
-    this.faction = faction;
+    this.render();
   }
   render()
   {
-    
+    fill(0, 0, 255);
+    rect(this.position.x, this.position. y, this.size, this.size);
   }
 }
 
-let civilianSector = new Array();
-let nationStability;
-let nationEconomy;
-
-// Factions' Influence
-let natoInfluence;
-let fiaInfluence;
-let aafInfluence;
-let csatInfluence;
-let smugInfluence;
-let pirateInfluence;
-
+let newLandSector = new Array;
+let newWaterSector = new Array;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   background(0, 200, 200);
+  let cellSize = width/20;
+  for (let x = 0; x < 20; x++) {
+    for (let y = 0; y < 8; y++) {
+      sectorType = floor(random(1, 3));
+      console.log(sectorType);
+      if (sectorType === 1)
+      {
+        newLandSector.push(new LandSector(new Vector2(x * cellSize, y * cellSize), cellSize, 10, 10, 10, 10));
+      }
+      else
+      {
+        newWaterSector.push(new WaterSector(new Vector2(x * cellSize, y * cellSize), cellSize, 10, 10, 10, 10));
+      }
+    }
+  }
 }
 
 function draw() {
-  civilianSector.push(new GrnSector(new Vector2(windowWidth/2, windowHeight/2)), 50, 100, 100, 100, "civilian");
+
+  for (let i = 0; i < newLandSector.length; i++)
+  {
+    newLandSector[i].update();
+  }
+  for (let i = 0; i < newWaterSector.length; i++)
+  {
+    newWaterSector[i].update();
+  }
 }
 
 function windowResized() {
