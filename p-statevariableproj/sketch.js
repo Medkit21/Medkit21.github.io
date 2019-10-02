@@ -37,7 +37,7 @@ class Vector2
 
 class Sector // Template for a Sector
 {
-  constructor(position, size, development, manpower, defence, attack)
+  constructor(position, size, development, manpower, defence, attack, isLand)
   {
     this.position = position;
     this.size = size;
@@ -45,6 +45,7 @@ class Sector // Template for a Sector
     this.manpower = manpower;
     this.defence = defence;
     this.attack = attack;
+    this.isLand = isLand;
   }
   update()
   {
@@ -52,71 +53,93 @@ class Sector // Template for a Sector
   }
   render()
   {
-    rect(this.position.x, this.position. y, this.size, this.size);
+    if (this.isLand === true) {
+      fill(0, 255, 0);
+    }
+    else {
+      fill(0, 0, 255);
+    }
+    rect(this.position.x + plusX, this.position. y, this.size, this.size);
   }
 }
 
-class LandSector extends Sector
+let sectors;
+let plusX;
+let cellSize;
+
+function getTwoDArray(x, y)
 {
-  update()
+  let arr = new Array(x);
+  for (let i = 0; i < x; i++)
   {
-    this.render();
+    arr[i] = new Array(y);
   }
-  render()
-  {
-    fill(0, 255, 0);
-    rect(this.position.x, this.position. y, this.size, this.size);
-  }
+  return arr;
 }
-
-class WaterSector extends Sector
-{
-  update()
-  {
-    this.render();
-  }
-  render()
-  {
-    fill(0, 0, 255);
-    rect(this.position.x, this.position. y, this.size, this.size);
-  }
-}
-
-let newLandSector = new Array;
-let newWaterSector = new Array;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   background(0, 200, 200);
-  let cellSize = width/20;
-  for (let x = 0; x < 20; x++) {
-    for (let y = 0; y < 8; y++) {
-      sectorType = floor(random(1, 3));
+  sectors = getTwoDArray(50, 50)
+
+  if (width >= height) {
+    cellSize = height/50;
+  }
+  else if (height > width) {
+    cellSize = width/50;
+  }
+  plusX = cellSize * 25;
+  for (let x = 0; x < 50; x++) {
+    for (let y = 0; y < 50; y++) {
+      sectorType = floor(random(1, 4));
       console.log(sectorType);
       if (sectorType === 1)
       {
-        newLandSector.push(new LandSector(new Vector2(x * cellSize, y * cellSize), cellSize, 10, 10, 10, 10));
+        sectors[x][y] = new Sector(new Vector2(x * cellSize, y * cellSize), cellSize, 10, 10, 10, 10, true);
       }
       else
       {
-        newWaterSector.push(new WaterSector(new Vector2(x * cellSize, y * cellSize), cellSize, 10, 10, 10, 10));
+        sectors[x][y] = new Sector(new Vector2(x * cellSize, y * cellSize), cellSize, 10, 10, 10, 10, false);
       }
     }
   }
 }
 
-function draw() {
 
-  for (let i = 0; i < newLandSector.length; i++)
-  {
-    newLandSector[i].update();
-  }
-  for (let i = 0; i < newWaterSector.length; i++)
-  {
-    newWaterSector[i].update();
-  }
+function draw() {
+  background(0, 200, 200);
+  loadSectors();
+}
+
+function drawTitle() {
+
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+}
+
+function loadSectors() {
+  for (let x = 0; x < 50; x++) {
+    for (let y = 0; y < 50; y++) {
+      sectors[x][y].update();
+    }
+  }
+}
+
+function generateWorld() {
+  
+}
+
+function mousePressed() {
+  let x = floor((mouseX - plusX) / cellSize)
+  let y = floor(mouseY / cellSize)
+  print("x: " + x + " y: " + y)
+
+  if (sectors[x][y].isLand) {
+    print("This is a land sector");
+  }
+  else {
+    print("this is not land");
+  }
 }
