@@ -37,7 +37,7 @@ class Vector2
 
 class Sector // Template for a Sector
 {
-  constructor(position, size, development, manpower, defence, attack, isLand)
+  constructor(position, size, development, manpower, defence, attack, landType)
   {
     this.position = position;
     this.size = size;
@@ -45,7 +45,7 @@ class Sector // Template for a Sector
     this.manpower = manpower;
     this.defence = defence;
     this.attack = attack;
-    this.isLand = isLand;
+    this.landType = landType;
   }
   update()
   {
@@ -53,8 +53,11 @@ class Sector // Template for a Sector
   }
   render()
   {
-    if (this.isLand === true) {
+    if (this.landType === "land") {
       fill(0, 255, 0);
+    }
+    if (this.landType === "arid") {
+      fill(210, 180, 140);
     }
     else {
       fill(0, 0, 255);
@@ -66,6 +69,8 @@ class Sector // Template for a Sector
 let sectors;
 let plusX;
 let cellSize;
+let selectedSector = "";
+let sectorColor = 0;
 
 function getTwoDArray(x, y)
 {
@@ -80,8 +85,44 @@ function getTwoDArray(x, y)
 function setup() {
   createCanvas(windowWidth, windowHeight);
   background(0, 200, 200);
-  sectors = getTwoDArray(50, 50)
+  sectors = getTwoDArray(50, 50);
 
+  generateWorld();
+}
+
+
+function draw() {
+  background(0, 200, 200);
+  loadSectors();
+  drawGUI();
+}
+
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}
+
+function drawGUI() {
+  fill(0);
+  textSize(20);
+  textAlign(LEFT);
+  text("SELECTED SECTOR", width/20, height/20);
+  fill(sectorColor);
+  rect(width/20 + 40, height/20 + 30, 100, 100);
+  fill(0);
+  textAlign(CENTER);
+  text(selectedSector, width/20 + 90, height/20 + 160);
+}
+
+function loadSectors() {
+  for (let x = 0; x < 50; x++) {
+    for (let y = 0; y < 50; y++) {
+      sectors[x][y].update();
+    }
+  }
+}
+
+function generateWorld() {
   if (width >= height) {
     cellSize = height/50;
   }
@@ -95,51 +136,38 @@ function setup() {
       console.log(sectorType);
       if (sectorType === 1)
       {
-        sectors[x][y] = new Sector(new Vector2(x * cellSize, y * cellSize), cellSize, 10, 10, 10, 10, true);
+        sectors[x][y] = new Sector(new Vector2(x * cellSize, y * cellSize), cellSize, 10, 10, 10, 10, "land");
+      }
+      else if (sectorType === 2) {
+        sectors[x][y] = new Sector(new Vector2(x * cellSize, y * cellSize), cellSize, 10, 10, 10, 10, "arid");
       }
       else
       {
-        sectors[x][y] = new Sector(new Vector2(x * cellSize, y * cellSize), cellSize, 10, 10, 10, 10, false);
+        sectors[x][y] = new Sector(new Vector2(x * cellSize, y * cellSize), cellSize, 10, 10, 10, 10, "water");
       }
     }
   }
 }
 
 
-function draw() {
-  background(0, 200, 200);
-  loadSectors();
-}
-
-function drawTitle() {
-
-}
-
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-}
-
-function loadSectors() {
-  for (let x = 0; x < 50; x++) {
-    for (let y = 0; y < 50; y++) {
-      sectors[x][y].update();
-    }
-  }
-}
-
-function generateWorld() {
-  
-}
-
 function mousePressed() {
-  let x = floor((mouseX - plusX) / cellSize)
-  let y = floor(mouseY / cellSize)
-  print("x: " + x + " y: " + y)
+  let x = floor((mouseX - plusX) / cellSize);
+  let y = floor(mouseY / cellSize);
+  print("x: " + x + " y: " + y);
 
-  if (sectors[x][y].isLand) {
+  if (sectors[x][y].landType === "land") {
     print("This is a land sector");
+    selectedSector = "Land Sector";
+    sectorColor = [0, 255, 0];
+  }
+  else if (sectors[x][y].landType === "arid") {
+    print("This is a arid sector");
+    selectedSector = "Arid Sector";
+    sectorColor = [210, 180, 140];
   }
   else {
     print("this is not land");
+    selectedSector = "Water Sector";
+    sectorColor = [0, 0, 255];
   }
 }
