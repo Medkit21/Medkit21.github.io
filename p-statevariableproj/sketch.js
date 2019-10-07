@@ -46,6 +46,8 @@ class Sector // Template for a Sector
     this.defence = defence;
     this.attack = attack;
     this.landType = landType;
+
+    this.city;
   }
   update()
   {
@@ -53,11 +55,18 @@ class Sector // Template for a Sector
   }
   render()
   {
-    if (this.landType === "land") {
-      fill(0, 255, 0);
+    if (this.landType === "plains") {
+      fill(0, 200, 0);
     }
-    if (this.landType === "arid") {
+    else if (this.landType === "forest") {
+      fill(34,139,34);
+    }
+    else if (this.landType === "arid") {
       fill(210, 180, 140);
+    }
+    else if (this.landType === "jungle")
+    {
+      fill(0, 100, 0);
     }
     else {
       fill(0, 0, 255);
@@ -71,6 +80,9 @@ let plusX;
 let cellSize;
 let selectedSector = "";
 let sectorColor = 0;
+
+// Noise
+let noiseScale = 0.02;
 
 function getTwoDArray(x, y)
 {
@@ -132,19 +144,31 @@ function generateWorld() {
   plusX = cellSize * 25;
   for (let x = 0; x < 50; x++) {
     for (let y = 0; y < 50; y++) {
-      sectorType = floor(random(1, 4));
-      console.log(sectorType);
-      if (sectorType === 1)
+      let sectorVal = noise(x / 7, y / 7);
+      let sectorType;
+      if (sectorVal < 0.25)
       {
-        sectors[x][y] = new Sector(new Vector2(x * cellSize, y * cellSize), cellSize, 10, 10, 10, 10, "land");
+        sectorType = 'jungle';
       }
-      else if (sectorType === 2) {
-        sectors[x][y] = new Sector(new Vector2(x * cellSize, y * cellSize), cellSize, 10, 10, 10, 10, "arid");
+      else if (sectorVal < 0.4)
+      {
+        sectorType = 'forest';
+      }
+      else if (sectorVal < 0.5)
+      {
+        sectorType = 'plains';
+      }
+      else if (sectorVal < 0.58)
+      {
+        sectorType = 'arid';
       }
       else
       {
-        sectors[x][y] = new Sector(new Vector2(x * cellSize, y * cellSize), cellSize, 10, 10, 10, 10, "water");
+        sectorType = 'water';
       }
+
+      console.log(sectorType);
+      sectors[x][y] = new Sector(new Vector2(x * cellSize, y * cellSize), cellSize, 10, 10, 10, 10, sectorType);
     }
   }
 }
@@ -155,15 +179,25 @@ function mousePressed() {
   let y = floor(mouseY / cellSize);
   print("x: " + x + " y: " + y);
 
-  if (sectors[x][y].landType === "land") {
-    print("This is a land sector");
-    selectedSector = "Land Sector";
-    sectorColor = [0, 255, 0];
+  if (sectors[x][y].landType === "plains") {
+    print("This is a plains sector");
+    selectedSector = "Plains Sector";
+    sectorColor = [0,200,0];
+  }
+  else if (sectors[x][y].landType === "forest") {
+    print("This is a forest sector");
+    selectedSector = "Forest Sector";
+    sectorColor = [34,139,34];
   }
   else if (sectors[x][y].landType === "arid") {
     print("This is a arid sector");
     selectedSector = "Arid Sector";
     sectorColor = [210, 180, 140];
+  }
+  else if (sectors[x][y].landType === "jungle") {
+    print("This is a jungle sector");
+    selectedSector = "Jungle Sector";
+    sectorColor = [0, 100, 0];
   }
   else {
     print("this is not land");
