@@ -57,7 +57,6 @@ function showMenu() {
   textSize(50);
   fill(0);
   text("Circle", windowWidth/2, windowHeight/2 + 110)
-
 }
 
 function checkIfButtonClicked() {
@@ -66,7 +65,8 @@ function checkIfButtonClicked() {
     if (mouseX > width/2 - 200 && mouseX < width/2 + 200 && mouseY > height/2 - 100 - 75 && mouseY < height/2 - 100 + 75) {
       state = "rectangle";
     }
-    if (mouseX > width/2 - 200 && mouseX < width/2 + 200 && mouseY > height/2 + 100 - 75 && mouseY < height/2+ 100  + 75) {
+    // Check for Circle Button
+    if (mouseX > width/2 - 200 && mouseX < width/2 + 200 && mouseY > height/2 + 100 - 75 && mouseY < height/2 + 100  + 75) {
       state = "circle";
     }
   }
