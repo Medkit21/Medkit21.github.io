@@ -4,6 +4,7 @@
 //
 // Extra for Experts:
 // Classes
+// World Generation
 
 
 class Vector2
@@ -69,7 +70,7 @@ class Sector // Template for a Sector
     {
       if (generationType === "normal")
       {
-        this.villageName = normalVillageNames[floor(random(0, normalVillageNames.length))];
+        this.villageName = mediterraneanVillageNames[floor(random(0, mediterraneanVillageNames.length))];
       }
       else if (generationType === "arid")
       {
@@ -132,15 +133,35 @@ let currentSector;
 let sectorColor = 0;
 
 const villageRate = 0.1;
-const normalVillageNames = ['Obamaville', 'Timsville', 'Schellenburg', 'Kuffnersville', 'Kavala', 'Pyrgos', 'Athanos', 'Aggelochori', 'Neri',
-'Kostas', 'Agios Dionysis', 'Kore', 'Galati', 'Syrta', 'Abdera', 'Oreokastro'];
+
+// Town names based on the World Generation Type
+const mediterraneanVillageNames = ['Kavala', 'Pyrgos', 'Athanos', 'Aggelochori', 'Neri','Kostas', 'Agios Dionysis', 'Kore', 'Galati', 'Syrta', 'Abdera', 'Oreokastro', 'Negades', 
+'Agios Konstantinos', 'Frini', 'Infestiona', 'Athira', 'Anthrakia', 'Charkra'];
 const aridVillageNames = ['Pazagbasi', 'Durocalar', 'Tabashahr', 'Kashavand', 'Tel Kemaniyah', 'Muqdatha', 'Safabin', 'Aswaria'];
 const jungleVillageNames = ['Nam', 'Katkoula', 'Savaka', 'Lailai', 'Cerebu', 'Laikoro', 'Namuvaka', 'Balavu', 'Tavu', 'Muaceba', 'Sosovu', 'Nani', 'Tuvanaka', 'Belfort',
-'Georgetown', 'Rasputin', 'Saint-Julien', 'Nicolet', 'Savu', 'La Rochelle', 'Tanouka']
+'Georgetown', 'Rasputin', 'Saint-Julien', 'Nicolet', 'Savu', 'La Rochelle', 'Tanouka', 'Kawacatoose']
+const westernVillageNames = ['Obamaville', 'Timsville', 'Schellenburg', 'Kuffnersville'];
 
 let gameStarted;
 let menuScreen = "main";
 let generationType = "";
+
+// Image Variables
+let bArid1, bArid2, bArid3, bArid4, bArid5, bJungle1, bJungle2, bJungle3, bJungle4, bJungle5;
+
+function preload() {
+  // Preloading Backdrop Images
+  bArid1 = loadImage("assets/backdrops/arid1.png");
+  bArid2 = loadImage("assets/backdrops/arid2.png");
+  bArid3 = loadImage("assets/backdrops/arid3.png");
+  bArid4 = loadImage("assets/backdrops/arid4.png");
+  bArid5 = loadImage("assets/backdrops/arid5.png");
+  bJungle1 = loadImage("assets/backdrops/jungle1.png");
+  bJungle2 = loadImage("assets/backdrops/jungle2.png");
+  bJungle3 = loadImage("assets/backdrops/jungle3.png");
+  bJungle4 = loadImage("assets/backdrops/jungle4.png");
+  bJungle5 = loadImage("assets/backdrops/jungle5.png");
+}
 
 function getTwoDArray(x, y)
 {
@@ -155,6 +176,7 @@ function getTwoDArray(x, y)
 function setup() {
   createCanvas(windowWidth, windowHeight);
   background(0, 200, 200);
+  randomBackdrop();
 
   gameStarted = false;
 }
@@ -165,11 +187,9 @@ function draw() {
     drawGUI();
   }
   else {
-    background(100, 0, 100);
     drawTitle();
   }
 }
-
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
@@ -225,7 +245,7 @@ function drawTitle() {
     textAlign(CENTER);
     textSize(50);
     fill(0);
-    text("Normal", windowWidth/2 - 500, windowHeight/2 + 10)
+    text("Mediterranean", windowWidth/2 - 500, windowHeight/2 + 10)
     rectMode(CORNER);
 
     rectMode(CENTER);
@@ -245,6 +265,41 @@ function drawTitle() {
     fill(0);
     text("Jungle", windowWidth/2 + 500, windowHeight/2 + 10)
     rectMode(CORNER);
+  }
+}
+
+function randomBackdrop()
+{
+  bDrop = floor(random(1, 11));
+  if (bDrop === 1) {
+    image(bArid1, 0, 0, width, height);
+  }
+  else if (bDrop === 2) {
+    image(bArid2, 0, 0, width, height);
+  }
+  else if (bDrop === 3) {
+    image(bArid3, 0, 0, width, height);
+  }
+  else if (bDrop === 4) {
+    image(bArid4, 0, 0, width, height);
+  }
+  else if (bDrop === 5) {
+    image(bArid5, 0, 0, width, height);
+  }
+  else if (bDrop === 6) {
+    image(bJungle1, 0, 0, width, height);
+  }
+  else if (bDrop === 7) {
+    image(bJungle2, 0, 0, width, height);
+  }
+  else if (bDrop === 8) {
+    image(bJungle5, 0, 0, width, height);
+  }
+  else if (bDrop === 9) {
+    image(bJungle4, 0, 0, width, height);
+  }
+  else {
+    image(bJungle5, 0, 0, width, height);
   }
 }
 
@@ -269,7 +324,7 @@ function generateWorld() {
       let sectorVal = noise(x / 7, y / 7);
       let sectorType;
 
-      // Normal/Western Generation
+      // Mediterranean Generation
       if (generationType === "normal") {
         if (sectorVal < 0.2)
         {
@@ -389,6 +444,7 @@ function mousePressed() {
       if (mouseIsPressed) {
         if (mouseX > width/2 - 200 && mouseX < width/2 + 200 && mouseY > height/2 - 100 - 75 && mouseY < height/2 - 100 + 75) {
           menuScreen = "worldgen";
+          randomBackdrop();
         }
       }
     }
