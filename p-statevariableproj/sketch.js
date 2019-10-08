@@ -146,7 +146,7 @@ let gameStarted;
 let menuScreen = "main";
 let generationType = "";
 
-// Image Variables
+// Backdrop Image Variables
 let bArid1, bArid2, bArid3, bArid4, bArid5, bJungle1, bJungle2, bJungle3, bJungle4, bJungle5;
 
 function preload() {
@@ -197,6 +197,7 @@ function windowResized() {
   loadSectors();
 }
 
+// Draws the GUI
 function drawGUI() {
   fill(0, 200, 200);
   noStroke();
@@ -217,6 +218,7 @@ function drawGUI() {
   }
 }
 
+// Draws the Title Screen
 function drawTitle() {
   if (menuScreen === "main") {
     textAlign(CENTER);
@@ -268,6 +270,7 @@ function drawTitle() {
   }
 }
 
+// Chooses a Random Backdrop
 function randomBackdrop()
 {
   bDrop = floor(random(1, 11));
@@ -303,6 +306,7 @@ function randomBackdrop()
   }
 }
 
+// Loads the Sectors on the Screen
 function loadSectors() {
   for (let x = 0; x < 50; x++) {
     for (let y = 0; y < 50; y++) {
@@ -311,6 +315,8 @@ function loadSectors() {
   }
 }
 
+
+// Generates the World
 function generateWorld() {
   if (width >= height) {
     cellSize = height/50;
@@ -441,6 +447,7 @@ function mousePressed() {
   }
   else {
     if (menuScreen === "main") {
+      // Start Game Button
       if (mouseIsPressed) {
         if (mouseX > width/2 - 200 && mouseX < width/2 + 200 && mouseY > height/2 - 100 - 75 && mouseY < height/2 - 100 + 75) {
           menuScreen = "worldgen";
@@ -449,7 +456,7 @@ function mousePressed() {
       }
     }
     else if (menuScreen === "worldgen") {
-      // Normal Button
+      // Mediterranean Button
       if (mouseIsPressed) {
         if (mouseX > width/2 - 500 - 200 && mouseX < width/2 - 500 + 200 && mouseY > height/2- 75 && mouseY < height/2 + 75) {
           generationType = "normal"
