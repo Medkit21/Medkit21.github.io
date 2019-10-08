@@ -216,6 +216,11 @@ function drawGUI() {
   if (currentSector != undefined && currentSector.isVillage) {
     text("Town: " + currentSector.villageName, width/20 + 90, height/20 + 200);
   }
+  fill(100, 0, 0);
+  rect(width - 300, height - 70, 200, 50);
+  fill(255);
+  text("Regenerate World", width - 200, height - 40);
+  fill(0);
 }
 
 // Draws the Title Screen
@@ -442,6 +447,13 @@ function mousePressed() {
         print("this is not land");
         selectedSector = "Water Sector";
         sectorColor = [0, 0, 255];
+      }
+    }
+
+    else if (mouseIsPressed) {
+      if (mouseX > width - 300 && mouseX < width - 100 && mouseY > height - 70 && mouseY < height - 20) {
+        gameStarted = false;
+        randomBackdrop();
       }
     }
   }
