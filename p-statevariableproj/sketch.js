@@ -131,7 +131,6 @@ let cellSize;
 let selectedSector = "";
 let currentSector;
 let sectorColor = 0;
-let nextSeed;
 
 const villageRate = 0.1;
 
@@ -178,7 +177,6 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   background(0, 200, 200);
   randomBackdrop();
-  nextSeed = random();
 
   gameStarted = false;
 }
@@ -325,8 +323,6 @@ function loadSectors() {
 
 // Generates the World
 function generateWorld() {
-  randomSeed(nextSeed);
-  nextSeed = random();
   let xoffset = random(-1000, 1000);
   let yoffset = random(-1000, 1000);
   if (width >= height) {
