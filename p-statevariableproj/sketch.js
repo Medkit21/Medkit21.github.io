@@ -131,6 +131,7 @@ let cellSize;
 let selectedSector = "";
 let currentSector;
 let sectorColor = 0;
+let nextSeed;
 
 const villageRate = 0.1;
 
@@ -177,6 +178,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   background(0, 200, 200);
   randomBackdrop();
+  nextSeed = random();
 
   gameStarted = false;
 }
@@ -323,6 +325,10 @@ function loadSectors() {
 
 // Generates the World
 function generateWorld() {
+  randomSeed(nextSeed);
+  nextSeed = random();
+  let xoffset = random(-1000, 1000);
+  let yoffset = random(-1000, 1000);
   if (width >= height) {
     cellSize = height/50;
   }
@@ -332,7 +338,7 @@ function generateWorld() {
   plusX = cellSize * 25;
   for (let x = 0; x < 50; x++) {
     for (let y = 0; y < 50; y++) {
-      let sectorVal = noise(x / 7, y / 7);
+      let sectorVal = noise(x / 7 + xoffset, y / 7 + yoffset);
       let sectorType;
 
       // Mediterranean Generation
