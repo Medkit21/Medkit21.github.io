@@ -2,9 +2,15 @@
 // Therrill Strongarm
 // September 11, 2019
 //
+// Also I feel like I went all in on this and I dont feel like I'll have enough for the Grids assignment
+//
 // Extra for Experts:
 // Classes
 // World Generation
+// Arrays
+// Vector2 Implementation
+// Perlin Noise
+// Grids
 
 
 class Vector2
@@ -47,6 +53,7 @@ class Sector // Template for a Sector
     this.defence;
     this.attack;
     this.landType = landType;
+    // Determines the chance of a village spawning based on the Sector Type
     if (this.landType == 'water')
     {
       villageChance = 1; 
@@ -55,17 +62,21 @@ class Sector // Template for a Sector
     {
     villageChance *= 3;
     }
-    else if (this.landType == 'jungle')
+    else if (this.landType == 'plains')
     {
-    villageChance *= 4;
+    villageChance *= 2;
+    }
+    else if (this.landType == 'forest')
+    {
+    villageChance *= 2;
     }
     else if (this.landType == 'jungle')
     {
-    villageChance *= 4;
+    villageChance *= 5;
     }
     this.isVillage = villageChance < villageRate;
 
-
+    // If there is a village grab the names of the village/town based on the world generation type
     if (this.isVillage)
     {
       if (generationType === "normal")
@@ -97,9 +108,11 @@ class Sector // Template for a Sector
     else if (this.landType === "arid") {
       fill(210, 180, 140);
     }
-    else if (this.landType === "jungle")
-    {
+    else if (this.landType === "jungle") {
       fill(0, 100, 0);
+    }
+    else if (this.landType === "wetlands") {
+      fill(107,142,35);
     }
     else {
       fill(0, 0, 255);
@@ -123,6 +136,14 @@ class Units {
     this.atk = atk;
     this.def = def;
   }
+  update()
+  {
+    this.render();
+  }
+  render()
+  {
+    // Nothing here yet!
+  }
 }
 
 let sectors;
@@ -132,11 +153,16 @@ let selectedSector = "";
 let currentSector;
 let sectorColor = 0;
 
+// Factions
+let BLUFOR; // Factions such as NATO, CTRG, Gendarmerie, etc
+let INDEP; // Factions such as AAF, FIA, Syndikat, CDF, etc
+let OPFOR; // Factions such as CSAT, AFRF, ChDkZ, TKM, etc
+
 const villageRate = 0.1;
 
 // Town names based on the World Generation Type
 const mediterraneanVillageNames = ['Kavala', 'Pyrgos', 'Athanos', 'Aggelochori', 'Neri','Kostas', 'Agios Dionysis', 'Kore', 'Galati', 'Syrta', 'Abdera', 'Oreokastro', 'Negades', 
-'Agios Konstantinos', 'Frini', 'Infestiona', 'Athira', 'Anthrakia', 'Charkra'];
+'Agios Konstantinos', 'Frini', 'Infestiona', 'Athira', 'Anthrakia', 'Charkra', 'Tilos'];
 const aridVillageNames = ['Pazagbasi', 'Durocalar', 'Tabashahr', 'Kashavand', 'Tel Kemaniyah', 'Muqdatha', 'Safabin', 'Aswaria'];
 const jungleVillageNames = ['Nam', 'Katkoula', 'Savaka', 'Lailai', 'Cerebu', 'Laikoro', 'Namuvaka', 'Balavu', 'Tavu', 'Muaceba', 'Sosovu', 'Nani', 'Tuvanaka', 'Belfort',
 'Georgetown', 'Rasputin', 'Saint-Julien', 'Nicolet', 'Savu', 'La Rochelle', 'Tanouka', 'Kawacatoose']
@@ -147,7 +173,9 @@ let menuScreen = "main";
 let generationType = "";
 
 // Backdrop Image Variables
-let bArid1, bArid2, bArid3, bArid4, bArid5, bJungle1, bJungle2, bJungle3, bJungle4, bJungle5;
+let bArid1, bArid2, bArid3, bArid4, bArid5;
+let bJungle1, bJungle2, bJungle3, bJungle4, bJungle5;
+let bMediterranean1, bMediterranean2, bMediterranean3, bMediterranean4, bMediterranean5;
 
 function preload() {
   // Preloading Backdrop Images
@@ -199,6 +227,7 @@ function windowResized() {
 
 // Draws the GUI
 function drawGUI() {
+  // Left side of the GUI
   fill(0, 200, 200);
   noStroke();
   rect(0, 0, plusX - 1, windowHeight)
@@ -216,7 +245,14 @@ function drawGUI() {
   if (currentSector != undefined && currentSector.isVillage) {
     text("Town: " + currentSector.villageName, width/20 + 90, height/20 + 200);
   }
+  // Right Side of the GUI
+  fill(0, 150, 150);
+  rectMode(CENTER);
+  rect(width - 200, 100, 300, 70);
+  fill(255);
+  text("Click on the grids/sectors", width - 200, 100);
   fill(100, 0, 0);
+  rectMode(CORNER);
   rect(width - 300, height - 70, 200, 50);
   fill(255);
   text("Regenerate World", width - 200, height - 40);
@@ -225,6 +261,7 @@ function drawGUI() {
 
 // Draws the Title Screen
 function drawTitle() {
+  // Main Menu Screen(Opening Screen)
   if (menuScreen === "main") {
     textAlign(CENTER);
     textSize(50);
@@ -240,6 +277,7 @@ function drawTitle() {
     text("Start Game", windowWidth/2, windowHeight/2 - 90)
     rectMode(CORNER);
   }
+  // Menu Screen for the World Generation
   if (menuScreen === "worldgen") {
     textAlign(CENTER);
     textSize(50);
@@ -362,17 +400,21 @@ function generateWorld() {
       }
       // Arid/Desert Generation
       if (generationType === "arid") {
-        if (sectorVal < 0.25)
+        if (sectorVal < 0.2)
         {
           sectorType = 'forest';
         }
-        else if (sectorVal < 0.35)
+        else if (sectorVal < 0.25)
         {
           sectorType = 'plains';
         }
-        else if (sectorVal < 0.6)
+        else if (sectorVal < 0.65)
         {
           sectorType = 'arid';
+        }
+        else if (sectorVal < 0.7)
+        {
+          sectorType = 'wetlands';
         }
         else
         {
@@ -391,7 +433,7 @@ function generateWorld() {
         }
         else if (sectorVal < 0.60)
         {
-          sectorType = 'plains';
+          sectorType = 'wetlands';
         }
         else if (sectorVal < 0.62)
         {
@@ -444,6 +486,11 @@ function mousePressed() {
         print("This is a jungle sector");
         selectedSector = "Jungle Sector";
         sectorColor = [0, 100, 0];
+      }
+      else if (sectors[x][y].landType === "wetlands") {
+        print("This is a wetlands sector");
+        selectedSector = "Wetlands Sector";
+        sectorColor = [107,142,35];
       }
       else {
         print("this is not land");
