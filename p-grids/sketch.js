@@ -1,8 +1,6 @@
-// Overthrow(State Variable Project)
+// Overthrow(Grid Assignment)
 // Therrill Strongarm
 // September 11, 2019
-//
-// Also I feel like I went all in on this and I dont feel like I'll have enough for the Grids assignment
 //
 // Extra for Experts:
 // Classes
@@ -10,7 +8,6 @@
 // Arrays
 // Vector2 Implementation
 // Perlin Noise
-// Grids
 
 
 class Vector2
@@ -154,9 +151,29 @@ let currentSector;
 let sectorColor = 0;
 
 // Factions
-let BLUFOR; // Factions such as NATO, CTRG, Gendarmerie, etc
-let INDEP; // Factions such as AAF, FIA, Syndikat, CDF, etc
-let OPFOR; // Factions such as CSAT, AFRF, ChDkZ, TKM, etc
+let BLUFOR; // Factions such as NATO, CTRG, Gendarmerie, CDF, BAF, ACR, etc.
+let GREENFOR; // Factions such as AAF, FIA, Syndikat, LDF, ION PMC,  etc.
+let INDEP1; // AI Factions that might spawn mid-game. Factions such as IDAP, ION, Cartels, NAPA, etc.
+let INDEP2; // AI Factions that might spawn mid game. Factions such as Zealots, Traders, Smugglers, Pirates, etc.
+let OPFOR; // Factions such as CSAT, AFRF, ChDkZ, TKM, TKA, TRF, etc.
+
+// Player Resources
+let money; // Money... what more needs to be said?
+let cp; // Control Points
+let mp; // Manpower
+
+// BLUFOR Reputation
+let bluforRep; // Civilian Reputation of BLUFOR
+let bluforIndepRep1; // Independant Group 1's reputation of BLUFOR
+let bluforIndepRep2; // Independant Group 2's reputation of BLUFOR
+// GREENFOR Reputation
+let greenforRep; // Civilian Reputation of GREENFOR
+let greenforIndepRep1; // Independant Group 1's reputation of GREENFOR
+let greenforIndepRep2; // Independant Group 2's reputation of GREENFOR
+// OPFOR Reputation
+let opforRep; // Civilian Reputation of OPFOR
+let opforIndepRep1; // Independant Group 1's reputation of OPFOR
+let opforIndepRep2; // Independant Group 2's reputation of OPFOR
 
 const villageRate = 0.1;
 
@@ -171,6 +188,7 @@ const westernVillageNames = ['Obamaville', 'Timsville', 'Schellenburg', 'Kuffner
 let gameStarted;
 let menuScreen = "main";
 let generationType = "";
+let selectedFaction = "";
 
 // Backdrop Image Variables
 let bArid1, bArid2, bArid3, bArid4, bArid5;
@@ -311,6 +329,42 @@ function drawTitle() {
     text("Jungle", windowWidth/2 + 500, windowHeight/2 + 10)
     rectMode(CORNER);
   }
+  if (menuScreen === "sideselection") {
+    textAlign(CENTER);
+    textSize(50);
+    fill(255);
+    text("Select Side", width/2, height/15);
+  
+    rectMode(CENTER);
+    fill(0, 0, 150);
+    rect(windowWidth/2 - 500, windowHeight/2, 400, 150);
+    textAlign(CENTER);
+    textSize(50);
+    fill(0);
+    text("BLUFOR", windowWidth/2 - 500, windowHeight/2 + 10)
+    rectMode(CORNER);
+
+    rectMode(CENTER);
+    fill(0, 150, 0);
+    rect(windowWidth/2, windowHeight/2, 400, 150);
+    textAlign(CENTER);
+    textSize(50);
+    fill(0);
+    text("INDEP", windowWidth/2, windowHeight/2 + 10)
+    rectMode(CORNER);
+    
+    rectMode(CENTER);
+    fill(150, 0, 0);
+    rect(windowWidth/2 + 500, windowHeight/2, 400, 150);
+    textAlign(CENTER);
+    textSize(50);
+    fill(0);
+    text("OPFOR", windowWidth/2 + 500, windowHeight/2 + 10)
+    rectMode(CORNER);
+  }
+  if (menuScreen === "factionSelection") {
+    factionAssignment();
+  }
 }
 
 // Chooses a Random Backdrop
@@ -374,6 +428,11 @@ function generateWorld() {
     for (let y = 0; y < 50; y++) {
       let sectorVal = noise(x / 7 + xoffset, y / 7 + yoffset);
       let sectorType;
+
+      // if (y < 10)
+      // {
+      //   sectorVal += (10 - y) / 30;
+      // }
 
       // Mediterranean Generation
       if (generationType === "normal") {
@@ -521,23 +580,270 @@ function mousePressed() {
       if (mouseIsPressed) {
         if (mouseX > width/2 - 500 - 200 && mouseX < width/2 - 500 + 200 && mouseY > height/2- 75 && mouseY < height/2 + 75) {
           generationType = "normal"
-          startGame();
+          menuScreen = "sideselection";
+          randomBackdrop();
         }
       }
       // Arid Button
        if (mouseIsPressed) {
         if (mouseX > width/2 - 200 && mouseX < width/2 + 200 && mouseY > height/2- 75 && mouseY < height/2 + 75) {
           generationType = "arid";
-          startGame();
+          menuScreen = "sideselection";
+          randomBackdrop();
         }
       }
       // Jungle Button
        if (mouseIsPressed) {
         if (mouseX > width/2 + 500 - 200 && mouseX < width/2 + 500 + 200 && mouseY > height/2- 75 && mouseY < height/2 + 75) {
           generationType = "jungle";
-          startGame();
+          menuScreen = "sideselection";
+          randomBackdrop();
         }
       }
     }
+    else if (menuScreen === "sideselection"){
+            // BLUFOR Button
+            if (mouseIsPressed) {
+              if (mouseX > width/2 - 500 - 200 && mouseX < width/2 - 500 + 200 && mouseY > height/2- 75 && mouseY < height/2 + 75) {
+                startGame();
+              }
+            }
+            // INDEP Button
+             if (mouseIsPressed) {
+              if (mouseX > width/2 - 200 && mouseX < width/2 + 200 && mouseY > height/2- 75 && mouseY < height/2 + 75) {
+                startGame();
+              }
+            }
+            // OPFOR Button
+             if (mouseIsPressed) {
+              if (mouseX > width/2 + 500 - 200 && mouseX < width/2 + 500 + 200 && mouseY > height/2- 75 && mouseY < height/2 + 75) {
+                startGame();
+              }
+            }
+    }
+    else if (menuScreen === "factionselection") {
+      factionAssignmentHitbox();
+    }
+  }
+}
+
+function factionAssignment()
+{
+  if (generationType === "mediterranean")
+  {
+    if (selectedFaction === "BLUFOR")
+    {
+      textAlign(CENTER);
+      textSize(50);
+      fill(255);
+      text("Select Faction", width/2, height/15);
+    
+      rectMode(CENTER);
+      fill(0, 0, 150);
+      rect(windowWidth/2 - 500, windowHeight/2, 400, 150);
+      textAlign(CENTER);
+      textSize(50);
+      fill(0);
+      text("NATO", windowWidth/2 - 500, windowHeight/2 + 10)
+      rectMode(CORNER);
+  
+      rectMode(CENTER);
+      fill(0, 150, 0);
+      rect(windowWidth/2, windowHeight/2, 400, 150);
+      textAlign(CENTER);
+      textSize(50);
+      fill(0);
+      text("CTRG", windowWidth/2, windowHeight/2 + 10)
+      rectMode(CORNER);
+      
+      rectMode(CENTER);
+      fill(150, 0, 0);
+      rect(windowWidth/2 + 500, windowHeight/2, 400, 150);
+      textAlign(CENTER);
+      textSize(50);
+      fill(0);
+      text("FIA", windowWidth/2 + 500, windowHeight/2 + 10)
+      rectMode(CORNER);
+    }
+    else if (selectedFaction === "INDEP")
+    {
+      textAlign(CENTER);
+      textSize(50);
+      fill(255);
+      text("Select Faction", width/2, height/15);
+    
+      rectMode(CENTER);
+      fill(0, 0, 150);
+      rect(windowWidth/2 - 500, windowHeight/2, 400, 150);
+      textAlign(CENTER);
+      textSize(50);
+      fill(0);
+      text("FIA", windowWidth/2 - 500, windowHeight/2 + 10)
+      rectMode(CORNER);
+  
+      rectMode(CENTER);
+      fill(0, 150, 0);
+      rect(windowWidth/2, windowHeight/2, 400, 150);
+      textAlign(CENTER);
+      textSize(50);
+      fill(0);
+      text("AAF", windowWidth/2, windowHeight/2 + 10)
+      rectMode(CORNER);
+      
+      rectMode(CENTER);
+      fill(150, 0, 0);
+      rect(windowWidth/2 + 500, windowHeight/2, 400, 150);
+      textAlign(CENTER);
+      textSize(50);
+      fill(0);
+      text("ION PMC", windowWidth/2 + 500, windowHeight/2 + 10)
+      rectMode(CORNER);
+    }
+    else if (selectedFaction === "OPFOR")
+    {
+      textAlign(CENTER);
+      textSize(50);
+      fill(255);
+      text("Select Faction", width/2, height/15);
+    
+      rectMode(CENTER);
+      fill(0, 0, 150);
+      rect(windowWidth/2 - 500, windowHeight/2, 400, 150);
+      textAlign(CENTER);
+      textSize(50);
+      fill(0);
+      text("CSAT", windowWidth/2 - 500, windowHeight/2 + 10)
+      rectMode(CORNER);
+  
+      rectMode(CENTER);
+      fill(0, 150, 0);
+      rect(windowWidth/2, windowHeight/2, 400, 150);
+      textAlign(CENTER);
+      textSize(50);
+      fill(0);
+      text("Altis Revolutionary Front", windowWidth/2, windowHeight/2 + 10)
+      rectMode(CORNER);
+      
+      rectMode(CENTER);
+      fill(150, 0, 0);
+      rect(windowWidth/2 + 500, windowHeight/2, 400, 150);
+      textAlign(CENTER);
+      textSize(50);
+      fill(0);
+      text("VIPER TEAM", windowWidth/2 + 500, windowHeight/2 + 10)
+      rectMode(CORNER);
+    }
+  }
+  else if (generationType === "arid")
+  {
+    if (selectedFaction === "BLUFOR")
+    {
+      textAlign(CENTER);
+      textSize(50);
+      fill(255);
+      text("Select Faction", width/2, height/15);
+    
+      rectMode(CENTER);
+      fill(0, 0, 150);
+      rect(windowWidth/2 - 500, windowHeight/2, 400, 150);
+      textAlign(CENTER);
+      textSize(50);
+      fill(0);
+      text("USMC", windowWidth/2 - 500, windowHeight/2 + 10)
+      rectMode(CORNER);
+  
+      rectMode(CENTER);
+      fill(0, 150, 0);
+      rect(windowWidth/2, windowHeight/2, 400, 150);
+      textAlign(CENTER);
+      textSize(50);
+      fill(0);
+      text("BAF", windowWidth/2, windowHeight/2 + 10)
+      rectMode(CORNER);
+      
+      rectMode(CENTER);
+      fill(150, 0, 0);
+      rect(windowWidth/2 + 500, windowHeight/2, 400, 150);
+      textAlign(CENTER);
+      textSize(50);
+      fill(0);
+      text("Bundeswehr", windowWidth/2 + 500, windowHeight/2 + 10)
+      rectMode(CORNER);
+    }
+    else if (selectedFaction === "INDEP")
+    {
+      textAlign(CENTER);
+      textSize(50);
+      fill(255);
+      text("Select Faction", width/2, height/15);
+    
+      rectMode(CENTER);
+      fill(0, 0, 150);
+      rect(windowWidth/2 - 500, windowHeight/2, 400, 150);
+      textAlign(CENTER);
+      textSize(50);
+      fill(0);
+      text("TKL", windowWidth/2 - 500, windowHeight/2 + 10)
+      rectMode(CORNER);
+  
+      rectMode(CENTER);
+      fill(0, 150, 0);
+      rect(windowWidth/2, windowHeight/2, 400, 150);
+      textAlign(CENTER);
+      textSize(50);
+      fill(0);
+      text("AAF", windowWidth/2, windowHeight/2 + 10)
+      rectMode(CORNER);
+      
+      rectMode(CENTER);
+      fill(150, 0, 0);
+      rect(windowWidth/2 + 500, windowHeight/2, 400, 150);
+      textAlign(CENTER);
+      textSize(50);
+      fill(0);
+      text("ION PMC", windowWidth/2 + 500, windowHeight/2 + 10)
+      rectMode(CORNER);
+    }
+    else if (selectedFaction === "OPFOR")
+    {
+      textAlign(CENTER);
+      textSize(50);
+      fill(255);
+      text("Select Faction", width/2, height/15);
+    
+      rectMode(CENTER);
+      fill(0, 0, 150);
+      rect(windowWidth/2 - 500, windowHeight/2, 400, 150);
+      textAlign(CENTER);
+      textSize(50);
+      fill(0);
+      text("CSAT", windowWidth/2 - 500, windowHeight/2 + 10)
+      rectMode(CORNER);
+  
+      rectMode(CENTER);
+      fill(0, 150, 0);
+      rect(windowWidth/2, windowHeight/2, 400, 150);
+      textAlign(CENTER);
+      textSize(50);
+      fill(0);
+      text("Altis Revolutionary Front", windowWidth/2, windowHeight/2 + 10)
+      rectMode(CORNER);
+      
+      rectMode(CENTER);
+      fill(150, 0, 0);
+      rect(windowWidth/2 + 500, windowHeight/2, 400, 150);
+      textAlign(CENTER);
+      textSize(50);
+      fill(0);
+      text("VIPER TEAM", windowWidth/2 + 500, windowHeight/2 + 10)
+      rectMode(CORNER);
+    }
+  }
+}
+function factionAssignmentHitbox()
+{
+  if (generationType === "mediterranean")
+  {
+
   }
 }
