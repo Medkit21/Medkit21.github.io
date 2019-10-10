@@ -188,6 +188,7 @@ const westernVillageNames = ['Obamaville', 'Timsville', 'Schellenburg', 'Kuffner
 let gameStarted;
 let menuScreen = "main";
 let generationType = "";
+let selectedSide = "";
 let selectedFaction = "";
 
 // Backdrop Image Variables
@@ -429,11 +430,6 @@ function generateWorld() {
       let sectorVal = noise(x / 7 + xoffset, y / 7 + yoffset);
       let sectorType;
 
-      // if (y < 10)
-      // {
-      //   sectorVal += (10 - y) / 30;
-      // }
-
       // Mediterranean Generation
       if (generationType === "normal") {
         if (sectorVal < 0.2)
@@ -631,215 +627,100 @@ function factionAssignment()
 {
   if (generationType === "mediterranean")
   {
-    if (selectedFaction === "BLUFOR")
-    {
-      textAlign(CENTER);
-      textSize(50);
-      fill(255);
-      text("Select Faction", width/2, height/15);
-    
-      rectMode(CENTER);
-      fill(0, 0, 150);
-      rect(windowWidth/2 - 500, windowHeight/2, 400, 150);
-      textAlign(CENTER);
-      textSize(50);
-      fill(0);
-      text("NATO", windowWidth/2 - 500, windowHeight/2 + 10)
-      rectMode(CORNER);
-  
-      rectMode(CENTER);
-      fill(0, 150, 0);
-      rect(windowWidth/2, windowHeight/2, 400, 150);
-      textAlign(CENTER);
-      textSize(50);
-      fill(0);
-      text("CTRG", windowWidth/2, windowHeight/2 + 10)
-      rectMode(CORNER);
-      
-      rectMode(CENTER);
-      fill(150, 0, 0);
-      rect(windowWidth/2 + 500, windowHeight/2, 400, 150);
-      textAlign(CENTER);
-      textSize(50);
-      fill(0);
-      text("FIA", windowWidth/2 + 500, windowHeight/2 + 10)
-      rectMode(CORNER);
+    if (selectedSide === "blufor") {
+      factionButtons("NATO", "CTRG", "FIA", (0, 0, 150));
     }
-    else if (selectedFaction === "INDEP")
-    {
-      textAlign(CENTER);
-      textSize(50);
-      fill(255);
-      text("Select Faction", width/2, height/15);
-    
-      rectMode(CENTER);
-      fill(0, 0, 150);
-      rect(windowWidth/2 - 500, windowHeight/2, 400, 150);
-      textAlign(CENTER);
-      textSize(50);
-      fill(0);
-      text("FIA", windowWidth/2 - 500, windowHeight/2 + 10)
-      rectMode(CORNER);
-  
-      rectMode(CENTER);
-      fill(0, 150, 0);
-      rect(windowWidth/2, windowHeight/2, 400, 150);
-      textAlign(CENTER);
-      textSize(50);
-      fill(0);
-      text("AAF", windowWidth/2, windowHeight/2 + 10)
-      rectMode(CORNER);
-      
-      rectMode(CENTER);
-      fill(150, 0, 0);
-      rect(windowWidth/2 + 500, windowHeight/2, 400, 150);
-      textAlign(CENTER);
-      textSize(50);
-      fill(0);
-      text("ION PMC", windowWidth/2 + 500, windowHeight/2 + 10)
-      rectMode(CORNER);
+    else if (selectedSide === "indep") {
+      factionButtons("FIA", "AAF", "Gendarmerie", (0, 0, 150));
     }
-    else if (selectedFaction === "OPFOR")
-    {
-      textAlign(CENTER);
-      textSize(50);
-      fill(255);
-      text("Select Faction", width/2, height/15);
-    
-      rectMode(CENTER);
-      fill(0, 0, 150);
-      rect(windowWidth/2 - 500, windowHeight/2, 400, 150);
-      textAlign(CENTER);
-      textSize(50);
-      fill(0);
-      text("CSAT", windowWidth/2 - 500, windowHeight/2 + 10)
-      rectMode(CORNER);
-  
-      rectMode(CENTER);
-      fill(0, 150, 0);
-      rect(windowWidth/2, windowHeight/2, 400, 150);
-      textAlign(CENTER);
-      textSize(50);
-      fill(0);
-      text("Altis Revolutionary Front", windowWidth/2, windowHeight/2 + 10)
-      rectMode(CORNER);
-      
-      rectMode(CENTER);
-      fill(150, 0, 0);
-      rect(windowWidth/2 + 500, windowHeight/2, 400, 150);
-      textAlign(CENTER);
-      textSize(50);
-      fill(0);
-      text("VIPER TEAM", windowWidth/2 + 500, windowHeight/2 + 10)
-      rectMode(CORNER);
+    else if (selectedSide === "opfor") {
+      factionButtons("CSAT", "AFRF", "VIPER Team", (0, 0, 150));
     }
   }
-  else if (generationType === "arid")
+  if (generationType === "arid")
   {
-    if (selectedFaction === "BLUFOR")
-    {
-      textAlign(CENTER);
-      textSize(50);
-      fill(255);
-      text("Select Faction", width/2, height/15);
-    
-      rectMode(CENTER);
-      fill(0, 0, 150);
-      rect(windowWidth/2 - 500, windowHeight/2, 400, 150);
-      textAlign(CENTER);
-      textSize(50);
-      fill(0);
-      text("USMC", windowWidth/2 - 500, windowHeight/2 + 10)
-      rectMode(CORNER);
-  
-      rectMode(CENTER);
-      fill(0, 150, 0);
-      rect(windowWidth/2, windowHeight/2, 400, 150);
-      textAlign(CENTER);
-      textSize(50);
-      fill(0);
-      text("BAF", windowWidth/2, windowHeight/2 + 10)
-      rectMode(CORNER);
-      
-      rectMode(CENTER);
-      fill(150, 0, 0);
-      rect(windowWidth/2 + 500, windowHeight/2, 400, 150);
-      textAlign(CENTER);
-      textSize(50);
-      fill(0);
-      text("Bundeswehr", windowWidth/2 + 500, windowHeight/2 + 10)
-      rectMode(CORNER);
+    if (selectedSide === "blufor") {
+      factionButtons("USMC", "BAF", "Bundeswehr", (0, 0, 150));
     }
-    else if (selectedFaction === "INDEP")
-    {
-      textAlign(CENTER);
-      textSize(50);
-      fill(255);
-      text("Select Faction", width/2, height/15);
-    
-      rectMode(CENTER);
-      fill(0, 0, 150);
-      rect(windowWidth/2 - 500, windowHeight/2, 400, 150);
-      textAlign(CENTER);
-      textSize(50);
-      fill(0);
-      text("TKL", windowWidth/2 - 500, windowHeight/2 + 10)
-      rectMode(CORNER);
-  
-      rectMode(CENTER);
-      fill(0, 150, 0);
-      rect(windowWidth/2, windowHeight/2, 400, 150);
-      textAlign(CENTER);
-      textSize(50);
-      fill(0);
-      text("AAF", windowWidth/2, windowHeight/2 + 10)
-      rectMode(CORNER);
-      
-      rectMode(CENTER);
-      fill(150, 0, 0);
-      rect(windowWidth/2 + 500, windowHeight/2, 400, 150);
-      textAlign(CENTER);
-      textSize(50);
-      fill(0);
-      text("ION PMC", windowWidth/2 + 500, windowHeight/2 + 10)
-      rectMode(CORNER);
+    else if (selectedSide === "indep") {
+      factionButtons("TKL", "ION PMC", "Gendarmerie", (0, 150, 0));
     }
-    else if (selectedFaction === "OPFOR")
-    {
-      textAlign(CENTER);
-      textSize(50);
-      fill(255);
-      text("Select Faction", width/2, height/15);
-    
-      rectMode(CENTER);
-      fill(0, 0, 150);
-      rect(windowWidth/2 - 500, windowHeight/2, 400, 150);
-      textAlign(CENTER);
-      textSize(50);
-      fill(0);
-      text("CSAT", windowWidth/2 - 500, windowHeight/2 + 10)
-      rectMode(CORNER);
-  
-      rectMode(CENTER);
-      fill(0, 150, 0);
-      rect(windowWidth/2, windowHeight/2, 400, 150);
-      textAlign(CENTER);
-      textSize(50);
-      fill(0);
-      text("Altis Revolutionary Front", windowWidth/2, windowHeight/2 + 10)
-      rectMode(CORNER);
-      
-      rectMode(CENTER);
-      fill(150, 0, 0);
-      rect(windowWidth/2 + 500, windowHeight/2, 400, 150);
-      textAlign(CENTER);
-      textSize(50);
-      fill(0);
-      text("VIPER TEAM", windowWidth/2 + 500, windowHeight/2 + 10)
-      rectMode(CORNER);
+    else if (selectedSide === "opfor") {
+      factionButtons("CSAT", "TKA", "TKM", (150, 0, 0));
+    }
+  }
+  if (generationType === "jungle")
+  {
+    if (selectedSide === "blufor") {
+      factionButtons("NATO", "CTRG", "HIDF", (0, 0, 150));
+    }
+    else if (selectedSide === "indep") {
+      factionButtons("Syndikat", "TPA", "Gendarmerie", (150, 0, 0));
+    }
+    else if (selectedSide === "opfor") {
+      factionButtons("CSAT", "AFRF", "VIPER Team", (150, 0, 0));
+    }
+  }
+  if (generationType === "western")
+  {
+    if (selectedSide === "blufor") {
+      factionButtons("USMC", "BAF", "Bundeswehr", (0, 0, 150));
+    }
+    else if (selectedSide === "indep") {
+      factionButtons("FIA", "ION PMC", "Gendarmerie", (0, 0, 150));
+    }
+    else if (selectedSide === "opfor") {
+      factionButtons("CSAT", "AFRF", "VIPER Team", (150, 0, 0));
+    }
+  }
+  if (generationType === "easteuropean")
+  {
+    if (selectedSide === "blufor") {
+      factionButtons("USMC", "CDF", "LDF", (0, 0, 150));
+    }
+    else if (selectedSide === "indep") {
+      factionButtons("ChDkZ", "NAPA", "Gendarmerie", (0, 0, 150));
+    }
+    else if (selectedSide === "opfor") {
+      factionButtons("CSAT", "AFRF", "ChDkZ", (150, 0, 0));
     }
   }
 }
+
+function factionButtons(faction1, faction2, faction3, rgb) {
+  textAlign(CENTER);
+  textSize(50);
+  fill(255);
+  text("Select Faction", width/2, height/15);
+
+  rectMode(CENTER);
+  fill(rgb);
+  rect(windowWidth/2 - 500, windowHeight/2, 400, 150);
+  textAlign(CENTER);
+  textSize(50);
+  fill(0);
+  text(faction1, windowWidth/2 - 500, windowHeight/2 + 10)
+  rectMode(CORNER);
+
+  rectMode(CENTER);
+  fill(rgb);
+  rect(windowWidth/2, windowHeight/2, 400, 150);
+  textAlign(CENTER);
+  textSize(50);
+  fill(0);
+  text(faction2, windowWidth/2, windowHeight/2 + 10)
+  rectMode(CORNER);
+  
+  rectMode(CENTER);
+  fill(rgb);
+  rect(windowWidth/2 + 500, windowHeight/2, 400, 150);
+  textAlign(CENTER);
+  textSize(50);
+  fill(0);
+  text(faction3, windowWidth/2 + 500, windowHeight/2 + 10)
+  rectMode(CORNER);
+}
+
 function factionAssignmentHitbox()
 {
   if (generationType === "mediterranean")
