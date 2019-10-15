@@ -1,4 +1,4 @@
-// Overthrow(Grid Assignment)
+// Antistasi(Grid Assignment)
 // Therrill Strongarm
 // September 11, 2019
 //
@@ -150,30 +150,25 @@ let selectedSector = "";
 let currentSector;
 let sectorColor = 0;
 
-// Factions
-let BLUFOR; // Factions such as NATO, CTRG, Gendarmerie, CDF, BAF, ACR, etc.
-let GREENFOR; // Factions such as AAF, FIA, Syndikat, LDF, ION PMC,  etc.
-let INDEP1; // AI Factions that might spawn mid-game. Factions such as IDAP, ION, Cartels, NAPA, etc.
-let INDEP2; // AI Factions that might spawn mid game. Factions such as Zealots, Traders, Smugglers, Pirates, etc.
-let OPFOR; // Factions such as CSAT, AFRF, ChDkZ, TKM, TKA, TRF, etc.
-
 // Player Resources
-let money; // Money... what more needs to be said?
-let cp; // Control Points
-let mp; // Manpower
+let money = 1000; // Money (Starting cash = $1000)
+let mp = 8; // Manpower (Starting MP = 8)
+let ammo; // Resistance Ammunition Supplies (1 = 1000)
+let govAggro; // Government Aggression (Higher Aggression will result in a larger QRF(Quick Response Forces))
+let bluforSupport; // BLUFOR Support(BLUFOR Support can be exhanged for Resources)
+let opforSupport; // Opfor Support(Higher OPFOR Support results in Punishments)
 
-// BLUFOR Reputation
-let bluforRep; // Civilian Reputation of BLUFOR
-let bluforIndepRep1; // Independant Group 1's reputation of BLUFOR
-let bluforIndepRep2; // Independant Group 2's reputation of BLUFOR
-// GREENFOR Reputation
-let greenforRep; // Civilian Reputation of GREENFOR
-let greenforIndepRep1; // Independant Group 1's reputation of GREENFOR
-let greenforIndepRep2; // Independant Group 2's reputation of GREENFOR
-// OPFOR Reputation
-let opforRep; // Civilian Reputation of OPFOR
-let opforIndepRep1; // Independant Group 1's reputation of OPFOR
-let opforIndepRep2; // Independant Group 2's reputation of OPFOR
+// Nation Stats
+let pop; // Civilian Population(If half the population dies you lose the game)
+let devastation; // Higher Devastation means Civilians struggle to get supplies, go homeless and unemployed (This can be exploited by both sides)
+let globalSupport; // Global Resistance Support/Global Civilian Support
+
+
+// Factions
+let resistance = ""; // Player Faction
+let government = ""; // Main Enemy Faction
+let blufor = ""; // NATO
+let opfor = ""; // CSAT/AFRF
 
 const villageRate = 0.1;
 
@@ -182,8 +177,8 @@ const mediterraneanVillageNames = ['Kavala', 'Pyrgos', 'Athanos', 'Aggelochori',
 'Agios Konstantinos', 'Frini', 'Infestiona', 'Athira', 'Anthrakia', 'Charkra', 'Tilos'];
 const aridVillageNames = ['Pazagbasi', 'Durocalar', 'Tabashahr', 'Kashavand', 'Tel Kemaniyah', 'Muqdatha', 'Safabin', 'Aswaria'];
 const jungleVillageNames = ['Nam', 'Katkoula', 'Savaka', 'Lailai', 'Cerebu', 'Laikoro', 'Namuvaka', 'Balavu', 'Tavu', 'Muaceba', 'Sosovu', 'Nani', 'Tuvanaka', 'Belfort',
-'Georgetown', 'Rasputin', 'Saint-Julien', 'Nicolet', 'Savu', 'La Rochelle', 'Tanouka', 'Kawacatoose']
-const westernVillageNames = ['Obamaville', 'Timsville', 'Schellenburg', 'Kuffnersville'];
+'Georgetown', 'Rasputin', 'Saint-Julien', 'Nicolet', 'Savu', 'La Rochelle', 'Tanouka'];
+const easteuropeVillageNames = ['Stary Sobor', 'Chernogorsk', 'Elektrozavodsk', 'Kamino'];
 
 let gameStarted;
 let menuScreen = "main";
@@ -224,6 +219,8 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   background(0, 200, 200);
   randomBackdrop();
+  pop = floor(random(8000, 10000));
+  console.log(pop);
 
   gameStarted = false;
 }
@@ -627,104 +624,24 @@ function factionAssignment()
 {
   if (generationType === "mediterranean")
   {
-    if (selectedSide === "blufor") {
-      factionButtons("NATO", "CTRG", "FIA", (0, 0, 150));
-    }
-    else if (selectedSide === "indep") {
-      factionButtons("FIA", "AAF", "Gendarmerie", (0, 0, 150));
-    }
-    else if (selectedSide === "opfor") {
-      factionButtons("CSAT", "AFRF", "VIPER Team", (0, 0, 150));
-    }
+    resistance = "FIA";
+    government = "AAF";
+    blufor = "NATO";
+    opfor = "CSAT";
   }
-  if (generationType === "arid")
+  else if (generationType === "easteurope")
   {
-    if (selectedSide === "blufor") {
-      factionButtons("USMC", "BAF", "Bundeswehr", (0, 0, 150));
-    }
-    else if (selectedSide === "indep") {
-      factionButtons("TKL", "ION PMC", "Gendarmerie", (0, 150, 0));
-    }
-    else if (selectedSide === "opfor") {
-      factionButtons("CSAT", "TKA", "TKM", (150, 0, 0));
-    }
+    resistance = "CHDKZ";
+    government = "CDF";
+    blufor = "NATO";
+    opfor = "AFRF";
   }
-  if (generationType === "jungle")
+  else if (generationType === "jungle")
   {
-    if (selectedSide === "blufor") {
-      factionButtons("NATO", "CTRG", "HIDF", (0, 0, 150));
-    }
-    else if (selectedSide === "indep") {
-      factionButtons("Syndikat", "TPA", "Gendarmerie", (150, 0, 0));
-    }
-    else if (selectedSide === "opfor") {
-      factionButtons("CSAT", "AFRF", "VIPER Team", (150, 0, 0));
-    }
-  }
-  if (generationType === "western")
-  {
-    if (selectedSide === "blufor") {
-      factionButtons("USMC", "BAF", "Bundeswehr", (0, 0, 150));
-    }
-    else if (selectedSide === "indep") {
-      factionButtons("FIA", "ION PMC", "Gendarmerie", (0, 0, 150));
-    }
-    else if (selectedSide === "opfor") {
-      factionButtons("CSAT", "AFRF", "VIPER Team", (150, 0, 0));
-    }
-  }
-  if (generationType === "easteuropean")
-  {
-    if (selectedSide === "blufor") {
-      factionButtons("USMC", "CDF", "LDF", (0, 0, 150));
-    }
-    else if (selectedSide === "indep") {
-      factionButtons("ChDkZ", "NAPA", "Gendarmerie", (0, 0, 150));
-    }
-    else if (selectedSide === "opfor") {
-      factionButtons("CSAT", "AFRF", "ChDkZ", (150, 0, 0));
-    }
+    resistance = "Syndikat";
+    government = "HIDF";
+    blufor = "CSAT";
+    opfor = "NATO";
   }
 }
 
-function factionButtons(faction1, faction2, faction3, rgb) {
-  textAlign(CENTER);
-  textSize(50);
-  fill(255);
-  text("Select Faction", width/2, height/15);
-
-  rectMode(CENTER);
-  fill(rgb);
-  rect(windowWidth/2 - 500, windowHeight/2, 400, 150);
-  textAlign(CENTER);
-  textSize(50);
-  fill(0);
-  text(faction1, windowWidth/2 - 500, windowHeight/2 + 10)
-  rectMode(CORNER);
-
-  rectMode(CENTER);
-  fill(rgb);
-  rect(windowWidth/2, windowHeight/2, 400, 150);
-  textAlign(CENTER);
-  textSize(50);
-  fill(0);
-  text(faction2, windowWidth/2, windowHeight/2 + 10)
-  rectMode(CORNER);
-  
-  rectMode(CENTER);
-  fill(rgb);
-  rect(windowWidth/2 + 500, windowHeight/2, 400, 150);
-  textAlign(CENTER);
-  textSize(50);
-  fill(0);
-  text(faction3, windowWidth/2 + 500, windowHeight/2 + 10)
-  rectMode(CORNER);
-}
-
-function factionAssignmentHitbox()
-{
-  if (generationType === "mediterranean")
-  {
-
-  }
-}
