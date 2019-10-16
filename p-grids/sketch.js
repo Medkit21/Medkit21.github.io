@@ -118,6 +118,9 @@ class Sector // Template for a Sector
 
     if(this.isVillage)
     {
+      // if (generationType === "normal") {
+      //   image(mediTown, this.position.x + plusX, this.position.y + this.size, this.size, this.size);
+      // }
       fill(200, 80, 10);
       triangle(this.position.x + plusX, this.position.y + this.size,
         this.position.x + plusX + this.size, this.position.y + this.size,
@@ -126,7 +129,7 @@ class Sector // Template for a Sector
   }
 }
 
-class Units {
+class Units { // Template for a Unit
   constructor(hp, atk, def)
   {
     this.hp = hp;
@@ -140,6 +143,22 @@ class Units {
   render()
   {
     // Nothing here yet!
+  }
+}
+
+class Buildings { // Template for a Building
+  constructor (hp, def)
+  {
+    this.hp = hp;
+    this.def = def;
+  }
+  update()
+  {
+    this.render();
+  }
+  render()
+  {
+    // Nothing here yet either!
   }
 }
 
@@ -191,6 +210,11 @@ let bArid1, bArid2, bArid3, bArid4, bArid5;
 let bJungle1, bJungle2, bJungle3, bJungle4, bJungle5;
 let bMediterranean1, bMediterranean2, bMediterranean3, bMediterranean4, bMediterranean5;
 
+// Town Images
+let mediTown;
+let eastEuroTown;
+let jungleTown;
+
 function preload() {
   // Preloading Backdrop Images
   bArid1 = loadImage("assets/backdrops/arid1.png");
@@ -203,6 +227,11 @@ function preload() {
   bJungle3 = loadImage("assets/backdrops/jungle3.png");
   bJungle4 = loadImage("assets/backdrops/jungle4.png");
   bJungle5 = loadImage("assets/backdrops/jungle5.png");
+
+  // Preloading Town Images
+  mediTown = loadImage("assets/buildings/mediVillage.png");
+  eastEuroTown = loadImage("assets/buildings/easteuroVillage.png");
+  jungleTown = loadImage("assets/buildings/jungleVillage.png");
 }
 
 function getTwoDArray(x, y)
