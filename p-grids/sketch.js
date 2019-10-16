@@ -80,9 +80,9 @@ class Sector // Template for a Sector
       {
         this.villageName = mediterraneanVillageNames[floor(random(0, mediterraneanVillageNames.length))];
       }
-      else if (generationType === "arid")
+      else if (generationType === "easteuro")
       {
-        this.villageName = aridVillageNames[floor(random(0, aridVillageNames.length))];
+        this.villageName = easteuroVillageNames[floor(random(0, easteuroVillageNames.length))];
       }
       else if (generationType === "jungle")
       {
@@ -114,17 +114,27 @@ class Sector // Template for a Sector
     else {
       fill(0, 0, 255);
     }
-    rect(this.position.x + plusX, this.position. y, this.size, this.size);
+    rect(this.position.x + plusX, this.position.y, this.size, this.size);
 
     if(this.isVillage)
     {
-      // if (generationType === "normal") {
-      //   image(mediTown, this.position.x + plusX, this.position.y + this.size, this.size, this.size);
-      // }
-      fill(200, 80, 10);
-      triangle(this.position.x + plusX, this.position.y + this.size,
-        this.position.x + plusX + this.size, this.position.y + this.size,
-        this.position.x + plusX + this.size/2, this.position.y)
+      if (generationType === "normal") {
+         image(mediTown, this.position.x + plusX, this.position.y, this.size, this.size);
+      }
+      else if (generationType === "easteuro") {
+        image(eastEuroTown, this.position.x + plusX, this.position.y, this.size, this.size);
+      }
+      else if (generationType === "jungle") {
+        image(jungleTown, this.position.x + plusX, this.position.y, this.size, this.size);
+      }
+      else {
+        image(eastEuroTown, this.position.x + plusX, this.position.y, this.size, this.size);
+      }
+     
+      // fill(200, 80, 10);
+      // triangle(this.position.x + plusX, this.position.y + this.size,
+      //   this.position.x + plusX + this.size, this.position.y + this.size,
+      //   this.position.x + plusX + this.size/2, this.position.y)
     }
   }
 }
@@ -178,8 +188,9 @@ let bluforSupport; // BLUFOR Support(BLUFOR Support can be exhanged for Resource
 let opforSupport; // Opfor Support(Higher OPFOR Support results in Punishments)
 
 // Nation Stats
-let pop; // Civilian Population(If half the population dies you lose the game)
-let devastation; // Higher Devastation means Civilians struggle to get supplies, go homeless and unemployed (This can be exploited by both sides)
+let pop; // Civilian Population
+let popHalf; // If Civilian Population drops past this number you will lose
+let globalDevastation; // Higher Devastation means Civilians struggle to get supplies, go homeless and unemployed (This can be exploited by both sides)
 let globalSupport; // Global Resistance Support/Global Civilian Support
 
 
@@ -194,10 +205,9 @@ const villageRate = 0.1;
 // Town names based on the World Generation Type
 const mediterraneanVillageNames = ['Kavala', 'Pyrgos', 'Athanos', 'Aggelochori', 'Neri','Kostas', 'Agios Dionysis', 'Kore', 'Galati', 'Syrta', 'Abdera', 'Oreokastro', 'Negades', 
 'Agios Konstantinos', 'Frini', 'Infestiona', 'Athira', 'Anthrakia', 'Charkra', 'Tilos'];
-const aridVillageNames = ['Pazagbasi', 'Durocalar', 'Tabashahr', 'Kashavand', 'Tel Kemaniyah', 'Muqdatha', 'Safabin', 'Aswaria'];
 const jungleVillageNames = ['Nam', 'Katkoula', 'Savaka', 'Lailai', 'Cerebu', 'Laikoro', 'Namuvaka', 'Balavu', 'Tavu', 'Muaceba', 'Sosovu', 'Nani', 'Tuvanaka', 'Belfort',
 'Georgetown', 'Rasputin', 'Saint-Julien', 'Nicolet', 'Savu', 'La Rochelle', 'Tanouka'];
-const easteuropeVillageNames = ['Stary Sobor', 'Chernogorsk', 'Elektrozavodsk', 'Kamino'];
+const easteuroVillageNames = ['Stary Sobor', 'Chernogorsk', 'Elektrozavodsk', 'Kamino'];
 
 let gameStarted;
 let menuScreen = "main";
@@ -214,6 +224,9 @@ let bMediterranean1, bMediterranean2, bMediterranean3, bMediterranean4, bMediter
 let mediTown;
 let eastEuroTown;
 let jungleTown;
+
+// Leader Portraits
+let fiaPort, aafPort, natoPortM, csatPortM, napaPort, chdkzPort, cdfPort, afrfPort, syndPort, hidfPort, natoPortJ, csatPortJ;
 
 function preload() {
   // Preloading Backdrop Images
@@ -232,6 +245,26 @@ function preload() {
   mediTown = loadImage("assets/buildings/mediVillage.png");
   eastEuroTown = loadImage("assets/buildings/easteuroVillage.png");
   jungleTown = loadImage("assets/buildings/jungleVillage.png");
+
+  // Preloading Altis/Mediterranean Leader Portraits
+  fiaPort = loadImage("assets/leaders/altis/FIA.png");
+  aafPort = loadImage("assets/leaders/altis/AAF.png");
+  natoPortM = loadImage("assets/leaders/altis/NATO.png");
+  csatPortM = loadImage("assets/leaders/altis/CSAT.png");
+
+  // Preloading Chernarus/East European Leader Portraits
+  napaPort = loadImage("assets/leaders/chernarus/NAPA.png");
+  chdkzPort = loadImage("assets/leaders/chernarus/CHDKZ.png");
+  cdfPort = loadImage("assets/leaders/chernarus/CDF.png");
+  afrfPort = loadImage("assets/leaders/chernarus/AFRF.png");
+
+  // Preloading Horizon Islands/Tanoan/Jungle Leader Portraits
+  syndPort = loadImage("assets/leaders/tanoa/Syndikat.png");
+  hidfPort = loadImage("assets/leaders/tanoa/HIDF.png");
+  csatPortJ = loadImage("assets/leaders/tanoa/CSATJ.png");
+  natoPortJ = loadImage("assets/leaders/tanoa/NATOJ.png");
+
+  // Preloading 
 }
 
 function getTwoDArray(x, y)
@@ -249,6 +282,7 @@ function setup() {
   background(0, 200, 200);
   randomBackdrop();
   pop = floor(random(8000, 10000));
+  popHalf = pop/2;
   console.log(pop);
 
   gameStarted = false;
@@ -335,7 +369,8 @@ function drawTitle() {
     textAlign(CENTER);
     textSize(50);
     fill(0);
-    text("Mediterranean", windowWidth/2 - 500, windowHeight/2 + 10)
+    text("Altis", windowWidth/2 - 500, windowHeight/2)
+    text("(Easy)", windowWidth/2 - 500, windowHeight/2 + 50)
     rectMode(CORNER);
 
     rectMode(CENTER);
@@ -344,7 +379,8 @@ function drawTitle() {
     textAlign(CENTER);
     textSize(50);
     fill(0);
-    text("Arid", windowWidth/2, windowHeight/2 + 10)
+    text("Chernarus", windowWidth/2, windowHeight/2)
+    text("(Medium)", windowWidth/2, windowHeight/2 + 50)
     rectMode(CORNER);
     
     rectMode(CENTER);
@@ -353,44 +389,12 @@ function drawTitle() {
     textAlign(CENTER);
     textSize(50);
     fill(0);
-    text("Jungle", windowWidth/2 + 500, windowHeight/2 + 10)
+    text("Horizon Islands", windowWidth/2 + 500, windowHeight/2)
+    text("(Hard)", windowWidth/2 + 500, windowHeight/2 + 50)
     rectMode(CORNER);
   }
-  if (menuScreen === "sideselection") {
-    textAlign(CENTER);
-    textSize(50);
-    fill(255);
-    text("Select Side", width/2, height/15);
-  
-    rectMode(CENTER);
-    fill(0, 0, 150);
-    rect(windowWidth/2 - 500, windowHeight/2, 400, 150);
-    textAlign(CENTER);
-    textSize(50);
-    fill(0);
-    text("BLUFOR", windowWidth/2 - 500, windowHeight/2 + 10)
-    rectMode(CORNER);
+  if (menuScreen === "altis") {
 
-    rectMode(CENTER);
-    fill(0, 150, 0);
-    rect(windowWidth/2, windowHeight/2, 400, 150);
-    textAlign(CENTER);
-    textSize(50);
-    fill(0);
-    text("INDEP", windowWidth/2, windowHeight/2 + 10)
-    rectMode(CORNER);
-    
-    rectMode(CENTER);
-    fill(150, 0, 0);
-    rect(windowWidth/2 + 500, windowHeight/2, 400, 150);
-    textAlign(CENTER);
-    textSize(50);
-    fill(0);
-    text("OPFOR", windowWidth/2 + 500, windowHeight/2 + 10)
-    rectMode(CORNER);
-  }
-  if (menuScreen === "factionSelection") {
-    factionAssignment();
   }
 }
 
@@ -479,21 +483,17 @@ function generateWorld() {
           sectorType = 'water';
         }
       }
-      // Arid/Desert Generation
-      if (generationType === "arid") {
-        if (sectorVal < 0.2)
+      // East European Generation
+      if (generationType === "easteuro") {
+        if (sectorVal < 0.4)
         {
           sectorType = 'forest';
         }
-        else if (sectorVal < 0.25)
+        else if (sectorVal < 0.6)
         {
           sectorType = 'plains';
         }
         else if (sectorVal < 0.65)
-        {
-          sectorType = 'arid';
-        }
-        else if (sectorVal < 0.7)
         {
           sectorType = 'wetlands';
         }
@@ -602,75 +602,33 @@ function mousePressed() {
       if (mouseIsPressed) {
         if (mouseX > width/2 - 500 - 200 && mouseX < width/2 - 500 + 200 && mouseY > height/2- 75 && mouseY < height/2 + 75) {
           generationType = "normal"
-          menuScreen = "sideselection";
-          randomBackdrop();
+          startGame();
         }
       }
       // Arid Button
        if (mouseIsPressed) {
         if (mouseX > width/2 - 200 && mouseX < width/2 + 200 && mouseY > height/2- 75 && mouseY < height/2 + 75) {
-          generationType = "arid";
-          menuScreen = "sideselection";
-          randomBackdrop();
+          generationType = "easteuro";
+          startGame();
         }
       }
       // Jungle Button
        if (mouseIsPressed) {
         if (mouseX > width/2 + 500 - 200 && mouseX < width/2 + 500 + 200 && mouseY > height/2- 75 && mouseY < height/2 + 75) {
           generationType = "jungle";
-          menuScreen = "sideselection";
-          randomBackdrop();
+          startGame();
         }
       }
     }
-    else if (menuScreen === "sideselection"){
-            // BLUFOR Button
-            if (mouseIsPressed) {
-              if (mouseX > width/2 - 500 - 200 && mouseX < width/2 - 500 + 200 && mouseY > height/2- 75 && mouseY < height/2 + 75) {
-                startGame();
-              }
-            }
-            // INDEP Button
-             if (mouseIsPressed) {
-              if (mouseX > width/2 - 200 && mouseX < width/2 + 200 && mouseY > height/2- 75 && mouseY < height/2 + 75) {
-                startGame();
-              }
-            }
-            // OPFOR Button
-             if (mouseIsPressed) {
-              if (mouseX > width/2 + 500 - 200 && mouseX < width/2 + 500 + 200 && mouseY > height/2- 75 && mouseY < height/2 + 75) {
-                startGame();
-              }
-            }
-    }
-    else if (menuScreen === "factionselection") {
-      factionAssignmentHitbox();
+    else if (menuScreen === "infoscreen") {
+
     }
   }
 }
 
-function factionAssignment()
-{
-  if (generationType === "mediterranean")
+function infoScreen() {
+  if (generationType === "normal")
   {
-    resistance = "FIA";
-    government = "AAF";
-    blufor = "NATO";
-    opfor = "CSAT";
-  }
-  else if (generationType === "easteurope")
-  {
-    resistance = "CHDKZ";
-    government = "CDF";
-    blufor = "NATO";
-    opfor = "AFRF";
-  }
-  else if (generationType === "jungle")
-  {
-    resistance = "Syndikat";
-    government = "HIDF";
-    blufor = "CSAT";
-    opfor = "NATO";
+
   }
 }
-
