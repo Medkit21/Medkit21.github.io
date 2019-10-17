@@ -50,26 +50,31 @@ class Sector // Template for a Sector
     this.defence;
     this.attack;
     this.landType = landType;
+    
     // Determines the chance of a village spawning based on the Sector Type
     if (this.landType == 'water')
     {
       villageChance = 1; 
     }
+    else if (this.landType == 'wetlands')
+    {
+      villageChance = 1;
+    }
     else if (this.landType == 'arid')
     {
-    villageChance *= 3;
+      villageChance *= 3;
     }
     else if (this.landType == 'plains')
     {
-    villageChance *= 2;
+      villageChance *= 2;
     }
     else if (this.landType == 'forest')
     {
-    villageChance *= 2;
+      villageChance *= 2;
     }
     else if (this.landType == 'jungle')
     {
-    villageChance *= 5;
+      villageChance *= 5;
     }
     this.isVillage = villageChance < villageRate;
 
@@ -193,12 +198,11 @@ let popHalf; // If Civilian Population drops past this number you will lose
 let globalDevastation; // Higher Devastation means Civilians struggle to get supplies, go homeless and unemployed (This can be exploited by both sides)
 let globalSupport; // Global Resistance Support/Global Civilian Support
 
-
 // Factions
 let resistance = ""; // Player Faction
 let government = ""; // Main Enemy Faction
-let blufor = ""; // NATO
-let opfor = ""; // CSAT/AFRF
+let blufor = ""; // Friendly faction that supports you
+let opfor = ""; // Hostile Faction that supports your enemy
 
 const villageRate = 0.1;
 
