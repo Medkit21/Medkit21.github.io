@@ -218,6 +218,7 @@ let menuScreen = "main";
 let generationType = "";
 let selectedSide = "";
 let selectedFaction = "";
+let selectedGen;
 
 // Backdrop Image Variables
 let bArid1, bArid2, bArid3, bArid4, bArid5;
@@ -349,7 +350,9 @@ function drawTitle() {
     textAlign(CENTER);
     textSize(50);
     fill(255);
-    text("Overthrow", width/2, height/15);
+    text("Antistasi", width/2, height/15);
+    textSize(60)
+    text("2D", width/2, height/15 + 65);
   
     rectMode(CENTER);
     fill(150, 0, 0);
@@ -397,8 +400,9 @@ function drawTitle() {
     text("(Hard)", windowWidth/2 + 500, windowHeight/2 + 50)
     rectMode(CORNER);
   }
-  if (menuScreen === "altis") {
-
+  if (selectedGen === "altis") {
+    background(0);
+    infoScreen("altis")
   }
 }
 
@@ -602,21 +606,22 @@ function mousePressed() {
       }
     }
     else if (menuScreen === "worldgen") {
-      // Mediterranean Button
+      // Mediterranean/Altis Button
       if (mouseIsPressed) {
         if (mouseX > width/2 - 500 - 200 && mouseX < width/2 - 500 + 200 && mouseY > height/2- 75 && mouseY < height/2 + 75) {
-          generationType = "normal"
-          startGame();
+          generationType = "normal";
+          menuScreen = "infoscreen";
+          selectedGen = "altis";
         }
       }
-      // Arid Button
+      // East European/Chernarus Button
        if (mouseIsPressed) {
         if (mouseX > width/2 - 200 && mouseX < width/2 + 200 && mouseY > height/2- 75 && mouseY < height/2 + 75) {
           generationType = "easteuro";
           startGame();
         }
       }
-      // Jungle Button
+      // Jungle/Horizon Islands Button
        if (mouseIsPressed) {
         if (mouseX > width/2 + 500 - 200 && mouseX < width/2 + 500 + 200 && mouseY > height/2- 75 && mouseY < height/2 + 75) {
           generationType = "jungle";
@@ -630,9 +635,46 @@ function mousePressed() {
   }
 }
 
-function infoScreen() {
-  if (generationType === "normal")
+function infoScreen(world) {
+  if (selectedGen === "altis")
   {
+    // Freedom and Independence Army
+    fill(255);
+    textSize(60)
+    text("Republic of Altis and Stratis", width/2, height/14);
+    textSize(30);
+    text("Information", width/2, height/14 + 30);
+    textSize(15);
+    text("Freedom and Independence Army", width/12 + 100, height/6-10);
+    image(fiaPort, width/12, height/6, 200, 200);
+    fill(0, 200, 0);
+    text("Pros:", width/12 + 100, height/2 - 40);
+    fill(255);
+    text("+High Civilian Support", width/12 + 100, height/2 - 20);
+    text("+NATO Support", width/12 + 100, height/2);
+    text("+High Manpower", width/12 + 100, height/2 + 20);
+    text("+2000 Starting Cash", width/12 + 100, height/2 + 40);
+    text("+Experienced Fighters", width/12 + 100, height/2 + 60);
+    fill(200, 0, 0);
+    text("Cons:", width/12 + 100, height/2 + 80);
+    fill(255);
+    text("-Low Supplies", width/12 + 100, height/2 + 100);
+    text("-Low Tier Weapons", width/12 + 100, height/2 + 120);
 
+    text("Altis Armed Forces", width/12 + 450, height/6-10);
+    image(aafPort, width/12 + 350, height/6, 200, 200)
+    fill(0, 200, 0);
+    text("Pros:", width/12 + 450, height/2 - 40);
+    fill(255);
+    text("+CSAT Sponsored Gear", width/12 + 450, height/2 - 20);
+    text("+Mechanized Divisions", width/12 + 450, height/2);
+    text("+Armoured Divisions", width/12 + 450, height/2 + 20);
+    text("+Air Divisions", width/12 + 450, height/2 + 40);
+    fill(200, 0, 0);
+    text("Cons:", width/12 + 450, height/2 + 60);
+    fill(255);
+    text("-Illegitimate Goverment", width/12 + 450, height/2 + 80);
+    text("-High Attrition", width/12 + 450, height/2 + 100);
+    text("-Low Visibility", width/12 + 450, height/2 + 120);
   }
 }
