@@ -191,6 +191,7 @@ let ammo; // Resistance Ammunition Supplies (1 = 1000)
 let govAggro; // Government Aggression (Higher Aggression will result in a larger QRF(Quick Response Forces))
 let bluforSupport; // BLUFOR Support(BLUFOR Support can be exhanged for Resources)
 let opforSupport; // Opfor Support(Higher OPFOR Support results in Punishments)
+let warLevel;
 
 // Nation Stats
 let pop; // Civilian Population
@@ -290,6 +291,13 @@ function setup() {
   popHalf = pop/2;
   console.log(pop);
 
+  globalSupport = 10;
+  govAggro = 5;
+  bluforSupport = 5;
+  opforSupport = 5;
+
+  warLevel = 1;
+
   gameStarted = false;
 }
 
@@ -330,17 +338,18 @@ function drawGUI() {
     text("Town: " + currentSector.villageName, width/20 + 90, height/20 + 200);
   }
   // Right Side of the GUI
-  fill(0, 150, 150);
-  rectMode(CENTER);
-  rect(width - 200, 100, 300, 70);
-  fill(255);
-  text("Click on the grids/sectors", width - 200, 100);
-  fill(100, 0, 0);
-  rectMode(CORNER);
-  rect(width - 300, height - 70, 200, 50);
-  fill(255);
-  text("Regenerate World", width - 200, height - 40);
+  fill(0, 200, 200);
+  noStroke();
+  rect((plusX * 3) + 1, 0, plusX - 1, windowHeight)
+  stroke(1);
   fill(0);
+  text(resistance + " Support: " + globalSupport, width - 200, 75);
+  text(government + " Aggression: " + govAggro, width - 200, 100);
+  text(blufor + " Support: " + bluforSupport, width - 200, 125);
+  text(opfor + " Support: " + opforSupport, width - 200, 150);
+  textSize(40);
+  text("WAR LEVEL: " + warLevel, width - 200, 50);
+  textSize(20);
 }
 
 // Draws the Title Screen
@@ -589,10 +598,6 @@ function mousePressed() {
     }
 
     else if (mouseIsPressed) {
-      if (mouseX > width - 300 && mouseX < width - 100 && mouseY > height - 70 && mouseY < height - 20) {
-        gameStarted = false;
-        randomBackdrop();
-      }
     }
   }
   else {
@@ -612,6 +617,12 @@ function mousePressed() {
           generationType = "normal";
           menuScreen = "infoscreen";
           selectedGen = "altis";
+          resistance = "FIA";
+          government = "AAF";
+          blufor = "NATO";
+          opfor = "CSAT";
+          globalSupport = 20;
+          bluforSupport = 15;
         }
       }
       // East European/Chernarus Button
@@ -630,7 +641,11 @@ function mousePressed() {
       }
     }
     else if (menuScreen === "infoscreen") {
-
+      if (mouseIsPressed) {
+        if (mouseX > width/2 - 200 && mouseX < width/2 + 200 && mouseY > height - 175 && mouseY < height - 100 + 75) {
+          startGame();
+        }
+      }
     }
   }
 }
@@ -638,43 +653,81 @@ function mousePressed() {
 function infoScreen(world) {
   if (selectedGen === "altis")
   {
-    // Freedom and Independence Army
+    // Freedom and Independence Army(FIA)
     fill(255);
     textSize(60)
     text("Republic of Altis and Stratis", width/2, height/14);
     textSize(30);
     text("Information", width/2, height/14 + 30);
     textSize(15);
-    text("Freedom and Independence Army", width/12 + 100, height/6-10);
-    image(fiaPort, width/12, height/6, 200, 200);
+    text("Freedom and Independence Army", 200, height/6-10);
+    image(fiaPort, + 100 , height/6, 200, 200);
     fill(0, 200, 0);
-    text("Pros:", width/12 + 100, height/2 - 40);
+    text("Pros:", 200, height/2 - 40);
     fill(255);
-    text("+High Civilian Support", width/12 + 100, height/2 - 20);
-    text("+NATO Support", width/12 + 100, height/2);
-    text("+High Manpower", width/12 + 100, height/2 + 20);
-    text("+2000 Starting Cash", width/12 + 100, height/2 + 40);
-    text("+Experienced Fighters", width/12 + 100, height/2 + 60);
+    text("+High Civilian Support", 200, height/2 - 20);
+    text("+NATO Support", 200, height/2);
+    text("+High Manpower", 200, height/2 + 20);
+    text("+2000 Starting Cash", 200, height/2 + 40);
+    text("+Experienced Fighters", 200, height/2 + 60);
     fill(200, 0, 0);
-    text("Cons:", width/12 + 100, height/2 + 80);
+    text("Cons:", 200, height/2 + 80);
     fill(255);
-    text("-Low Supplies", width/12 + 100, height/2 + 100);
-    text("-Low Tier Weapons", width/12 + 100, height/2 + 120);
+    text("-Low Supplies", 200, height/2 + 100);
+    text("-Low Tier Weapons", 200, height/2 + 120);
 
-    text("Altis Armed Forces", width/12 + 450, height/6-10);
-    image(aafPort, width/12 + 350, height/6, 200, 200)
+    // Altis Armed Forces(AAF)
+    text("Altis Armed Forces", width/2 - 200, height/6-10);
+    image(aafPort, width/2 - 300, height/6, 200, 200)
     fill(0, 200, 0);
-    text("Pros:", width/12 + 450, height/2 - 40);
+    text("Pros:", width/2 - 200, height/2 - 40);
     fill(255);
-    text("+CSAT Sponsored Gear", width/12 + 450, height/2 - 20);
-    text("+Mechanized Divisions", width/12 + 450, height/2);
-    text("+Armoured Divisions", width/12 + 450, height/2 + 20);
-    text("+Air Divisions", width/12 + 450, height/2 + 40);
+    text("+CSAT Sponsored Gear", width/2 - 200, height/2 - 20);
+    text("+Mechanized Divisions", width/2 - 200, height/2);
+    text("+Armoured Divisions", width/2 - 200, height/2 + 20);
+    text("+Air Divisions", width/2 - 200, height/2 + 40);
     fill(200, 0, 0);
-    text("Cons:", width/12 + 450, height/2 + 60);
+    text("Cons:", width/2 - 200, height/2 + 60);
     fill(255);
-    text("-Illegitimate Goverment", width/12 + 450, height/2 + 80);
-    text("-High Attrition", width/12 + 450, height/2 + 100);
-    text("-Low Visibility", width/12 + 450, height/2 + 120);
+    text("-Illegitimate Goverment", width/2 - 200, height/2 + 80);
+    text("-High Attrition", width/2 - 200, height/2 + 100);
+    text("-Low Visibility", width/2 - 200, height/2 + 120);
+
+    // NATO
+    text("North Atlantic Treaty Organisation", width/2 + 200, height/6 - 10);
+    image(natoPortM, width/2 + 100, height/6, 200, 200);
+    fill(0, 200, 0);
+    text("Pros:", width/2 + 200, height/2 - 40);
+    fill(255);
+    text("+Heavily Armed Infantry", width/2 + 200, height/2 - 20);
+    text("+Experienced Soldiers", width/2 + 200, height/2);
+    text("+CTRG Team 14", width/2 + 200, height/2 + 20);
+    text("+Air Divisions", width/2 + 200, height/2 + 40);
+    text("+Armoured Divisions", width/2 + 200, height/2 + 60);
+    text("+Mechanized Divisions", width/2 + 200, height/2 + 80);
+    fill(200, 0, 0);
+    text("Cons:", width/2 + 200, height/2 + 100);
+    fill(255);
+    text("-Slow Movement Speed", width/2 + 200, height/2 + 120);
+
+    // CSAT
+    text("Canton-Protocol Strategic Alliance Treaty", width - 200, height/6 - 10);
+    image(csatPortM, width - 300, height/6, 200, 200);
+    fill(0, 200, 0);
+    text("Pros:", width - 200, height/2 - 40);
+    fill(255);
+    text("+Viper Team", width - 200, height/2 - 20);
+    text("+Advanced Equipment", width - 200, height/2);
+    text("+Supported by AAF", width - 200, height/2 + 20);
+    text("+Eastwind Device", width - 200, height/2 + 40);
+    text("+Cluster Bombs", width - 200, height/2 + 60);
+    fill(200, 0, 0);
+    text("Cons:", width - 200, height/2 + 80);
+    fill(255);
+    text("-Hated by Altians", width - 200, height/2 + 100);
+    text("-Slow Movement Speed", width - 200, height/2 + 120);
+
+    rectMode(CORNER);
+    rect(width/2 - 200, height - 200, 400, 150);
   }
 }
