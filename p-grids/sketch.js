@@ -413,6 +413,14 @@ function drawTitle() {
     background(0);
     infoScreen("altis")
   }
+  if (selectedGen === "chernarus") {
+    background(0);
+    infoScreen("chernarus")
+  }
+  if (selectedGen === "tanoa") {
+    background(0);
+    infoScreen("tanoa")
+  }
 }
 
 // Chooses a Random Backdrop
@@ -629,14 +637,32 @@ function mousePressed() {
        if (mouseIsPressed) {
         if (mouseX > width/2 - 200 && mouseX < width/2 + 200 && mouseY > height/2- 75 && mouseY < height/2 + 75) {
           generationType = "easteuro";
-          startGame();
+          menuScreen = "infoscreen";
+          selectedGen = "chernarus";
+          resistance = "NAPA";
+          government = "ChDKZ";
+          blufor = "CDF";
+          opfor = "AFRF";
+          warLevel = 2;
+          globalSupport = 10;
+          govAggro = 20;
+          bluforSupport = 5;
         }
       }
       // Jungle/Horizon Islands Button
        if (mouseIsPressed) {
         if (mouseX > width/2 + 500 - 200 && mouseX < width/2 + 500 + 200 && mouseY > height/2- 75 && mouseY < height/2 + 75) {
           generationType = "jungle";
-          startGame();
+          menuScreen = "infoscreen";
+          selectedGen = "tanoa";
+          resistance = "Syndikat";
+          government = "HIDF";
+          blufor = "CSAT";
+          opfor = "NATO";
+          globalSupport = 5;
+          govAggro = 25;
+          bluforSupport = 10;
+          opforSupport = 15;
         }
       }
     }
@@ -651,15 +677,16 @@ function mousePressed() {
 }
 
 function infoScreen(world) {
-  if (selectedGen === "altis")
+  if (world === "altis")
   {
-    // Freedom and Independence Army(FIA)
     fill(255);
     textSize(60)
     text("Republic of Altis and Stratis", width/2, height/14);
     textSize(30);
     text("Information", width/2, height/14 + 30);
     textSize(15);
+
+    // Freedom and Independence Army
     text("Freedom and Independence Army", 200, height/6-10);
     image(fiaPort, + 100 , height/6, 200, 200);
     fill(0, 200, 0);
@@ -728,6 +755,184 @@ function infoScreen(world) {
     text("-Slow Movement Speed", width - 200, height/2 + 120);
 
     rectMode(CORNER);
+    stroke(255);
+    fill(0);
     rect(width/2 - 200, height - 200, 400, 150);
+    stroke(1);
+    fill(255);
+    textSize(60);
+    text("Start Game", width/2, height - 100);
+  }
+  else if (world === "chernarus")
+  {
+    fill(255);
+    textSize(60)
+    text("Chernarus", width/2, height/14);
+    textSize(30);
+    text("Information", width/2, height/14 + 30);
+    textSize(15);
+
+    // National Party of Chernarus(NAPA)
+    text("National Party of Chernarus", 200, height/6-10);
+    image(napaPort, + 100 , height/6, 200, 200);
+    fill(0, 200, 0);
+    text("Pros:", 200, height/2 - 40);
+    fill(255);
+    text("+Extensive Knowledge of the Area", 200, height/2 - 20);
+    text("+Low Attrition", 200, height/2);
+    text("+Merciless Tactics", 200, height/2 + 20);
+    fill(200, 0, 0);
+    text("Cons:", 200, height/2 + 40);
+    fill(255);
+    text("-Low Supplies", 200, height/2 + 60);
+    text("-Untrained Units", 200, height/2 + 80);
+    text("-High Chance of Setting off Mines", 200, height/2 + 100);
+    text("-Blamed for Moscow Bombing", 200, height/2 + 120);
+
+    // Chernarussian Movement of the Red Star(ChDKZ)
+    text("Chernarussian Movement of the Red Star", width/2 - 200, height/6-10);
+    image(chdkzPort, width/2 - 300, height/6, 200, 200)
+    fill(0, 200, 0);
+    text("Pros:", width/2 - 200, height/2 - 40);
+    fill(255);
+    text("+IEDs", width/2 - 200, height/2 - 20);
+    text("+Anti-Air", width/2 - 200, height/2);
+    text("+Guerilla Tactics", width/2 - 200, height/2 + 20);
+    text("+High Attack against CDF", width/2 - 200, height/2 + 40);
+    fill(200, 0, 0);
+    text("Cons:", width/2 - 200, height/2 + 60);
+    fill(255);
+    text("-AFRF Target", width/2 - 200, height/2 + 80);
+    text("-High Attrition", width/2 - 200, height/2 + 100);
+    text("-High Amount of Warcrimes", width/2 - 200, height/2 + 120);
+
+    // Chernarus Defense Forces(CDF)
+    text("Chernarus Defense Forces", width/2 + 200, height/6 - 10);
+    image(cdfPort, width/2 + 100, height/6, 200, 200);
+    fill(0, 200, 0);
+    text("Pros:", width/2 + 200, height/2 - 40);
+    fill(255);
+    text("+High Manpower", width/2 + 200, height/2 - 20);
+    text("+US Equipment", width/2 + 200, height/2);
+    text("+Low Attrition", width/2 + 200, height/2 + 20);
+    text("+True Government", width/2 + 200, height/2 + 40);
+    text("+Mechanized Divisions", width/2 + 200, height/2 + 60);
+    fill(200, 0, 0);
+    text("Cons:", width/2 + 200, height/2 + 80);
+    fill(255);
+    text("-High Chance of Setting off Mines", width/2 + 200, height/2 + 100);
+    text("-Slow Movement Speed", width/2 + 200, height/2 + 120);
+
+    // Armed Forces of the Russian Federation(AFRF)
+    text("Armed Forces of the Russian Federation", width - 200, height/6 - 10);
+    image(afrfPort, width - 300, height/6, 200, 200);
+    fill(0, 200, 0);
+    text("Pros:", width - 200, height/2 - 40);
+    fill(255);
+    text("+Heavy Armour", width - 200, height/2 - 20);
+    text("+High Manpower", width - 200, height/2);
+    text("+Merciless Tactics", width - 200, height/2 + 20);
+    text("+Hinds", width - 200, height/2 + 40);
+    text("+Cluster Bombs", width - 200, height/2 + 60);
+    fill(200, 0, 0);
+    text("Cons:", width - 200, height/2 + 80);
+    fill(255);
+    text("-High Attrition", width - 200, height/2 + 100);
+    text("-Slow Movement Speed", width - 200, height/2 + 120);
+
+    rectMode(CORNER);
+    stroke(255);
+    fill(0);
+    rect(width/2 - 200, height - 200, 400, 150);
+    stroke(1);
+    fill(255);
+    textSize(60);
+    text("Start Game", width/2, height - 100);
+  }
+  else if (world === "tanoa")
+  {
+    fill(255);
+    textSize(60)
+    text("Horizon Islands", width/2, height/14);
+    textSize(30);
+    text("Information", width/2, height/14 + 30);
+    textSize(15);
+
+    // Syndikat
+    text("Syndikat", 200, height/6-10);
+    image(syndPort, + 100 , height/6, 200, 200);
+    fill(0, 200, 0);
+    text("Pros:", 200, height/2 - 40);
+    fill(255);
+    text("+Knowledge of Area", 200, height/2 - 20);
+    text("+Supported by CSAT", 200, height/2);
+    fill(200, 0, 0);
+    text("Cons:", 200, height/2 + 20);
+    fill(255);
+    text("-Low Supplies", 200, height/2 + 40);
+    text("-Untrained Units", 200, height/2 + 60);
+    text("-High Chance of Setting off Mines", 200, height/2 + 80);
+    text("-High Attrition", 200, height/2 + 100);
+    text("-Crime Syndicate", 200, height/2 + 120);
+
+    // Horizon Islands Defense Force(HIDF)
+    text("Horizon Islands Defense Force", width/2 - 200, height/6-10);
+    image(hidfPort, width/2 - 300, height/6, 200, 200)
+    fill(0, 200, 0);
+    text("Pros:", width/2 - 200, height/2 - 40);
+    fill(255);
+    text("+Merciless Tactics", width/2 - 200, height/2 - 20);
+    text("+Helicopter Divisions", width/2 - 200, height/2);
+    text("+NATO Support", width/2 - 200, height/2 + 20);
+    text("+Gendarmerie", width/2 - 200, height/2 + 40);
+    fill(200, 0, 0);
+    text("Cons:", width/2 - 200, height/2 + 60);
+    fill(255);
+    text("-Cold War Era Equipment", width/2 - 200, height/2 + 80);
+    text("-High Attrition", width/2 - 200, height/2 + 100);
+    text("-High Aggression", width/2 - 200, height/2 + 120);
+
+    // Canton-Protocol Strategic Alliance Treaty(CSAT)
+    text("Canton-Protocol Strategic Alliance Treaty", width/2 + 200, height/6 - 10);
+    image(csatPortJ, width/2 + 100, height/6, 200, 200);
+    fill(0, 200, 0);
+    text("Pros:", width/2 + 200, height/2 - 40);
+    fill(255);
+    text("+Viper Team", width/2 + 200, height/2 - 20);
+    text("+Advanced Equipment", width/2 + 200, height/2);
+    text("+Low Attrition", width/2 + 200, height/2 + 20);
+    text("+Air Divisions", width/2 + 200, height/2 + 40);
+    fill(200, 0, 0);
+    text("Cons:", width/2 + 200, height/2 + 60);
+    fill(255);
+    text("-High Chance of Setting off Mines", width/2 + 200, height/2 + 80);
+    text("-Slow Movement Speed", width/2 + 200, height/2 + 100);
+    text("-CSAT Decline", width/2 + 200, height/2 + 120);
+
+    // North Atlantic Treaty Organisation(NATO)
+    text("North Atlantic Treaty Organisation", width - 200, height/6 - 10);
+    image(natoPortJ, width - 300, height/6, 200, 200);
+    fill(0, 200, 0);
+    text("Pros:", width - 200, height/2 - 40);
+    fill(255);
+    text("+Heavy Armour", width - 200, height/2 - 20);
+    text("+High Manpower", width - 200, height/2);
+    text("+CTRG Team 15", width - 200, height/2 + 20);
+    text("+High Visability", width - 200, height/2 + 40);
+    text("+Cluster Bombs", width - 200, height/2 + 60);
+    fill(200, 0, 0);
+    text("Cons:", width - 200, height/2 + 80);
+    fill(255);
+    text("-Restricted Armory until War Level 3", width - 200, height/2 + 100);
+    text("-Slow Movement Speed", width - 200, height/2 + 120);
+
+    rectMode(CORNER);
+    stroke(255);
+    fill(0);
+    rect(width/2 - 200, height - 200, 400, 150);
+    stroke(1);
+    fill(255);
+    textSize(60);
+    text("Start Game", width/2, height - 100);
   }
 }
