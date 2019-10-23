@@ -45,11 +45,13 @@ class Sector // Template for a Sector
   {
     this.position = position;
     this.size = size;
-    this.development;
-    this.manpower;
-    this.defence;
-    this.attack;
     this.landType = landType;
+
+    // Sector Stats
+    this.devastation;
+    this.waterSupply;
+    this.foodSupply;
+    this.fuelSupply;
     
     // Determines the chance of a village spawning based on the Sector Type
     if (this.landType == 'water')
@@ -145,11 +147,12 @@ class Sector // Template for a Sector
 }
 
 class Units { // Template for a Unit
-  constructor(hp, atk, def)
+  constructor(position, manpower, side, faction)
   {
-    this.hp = hp;
-    this.atk = atk;
-    this.def = def;
+    this.position = position;
+    this.manpower = manpower;
+    this.side = side;
+    this.faction = faction;
   }
   update()
   {
@@ -161,22 +164,6 @@ class Units { // Template for a Unit
   }
 }
 
-class Buildings { // Template for a Building
-  constructor (hp, def)
-  {
-    this.hp = hp;
-    this.def = def;
-  }
-  update()
-  {
-    this.render();
-  }
-  render()
-  {
-    // Nothing here yet either!
-  }
-}
-
 let sectors;
 let plusX;
 let cellSize;
@@ -184,10 +171,13 @@ let selectedSector = "";
 let currentSector;
 let sectorColor = 0;
 
-// Player Resources
+// Player/Resistance Resources
 let money = 1000; // Money (Starting cash = $1000)
 let mp = 8; // Manpower (Starting MP = 8)
 let ammo; // Resistance Ammunition Supplies (1 = 1000)
+let training; // Unit Training (Higher Training = Higher Chance of Winning Battles)
+
+// Passive Stats
 let govAggro; // Government Aggression (Higher Aggression will result in a larger QRF(Quick Response Forces))
 let bluforSupport; // BLUFOR Support(BLUFOR Support can be exhanged for Resources)
 let opforSupport; // Opfor Support(Higher OPFOR Support results in Punishments)
@@ -198,6 +188,7 @@ let pop; // Civilian Population
 let popHalf; // If Civilian Population drops past this number you will lose
 let globalDevastation; // Higher Devastation means Civilians struggle to get supplies, go homeless and unemployed (This can be exploited by both sides)
 let globalSupport; // Global Resistance Support/Global Civilian Support
+let event; // Economy Crash, Droughts and Natural Disasters
 
 // Factions
 let resistance = ""; // Player Faction
@@ -211,7 +202,7 @@ const villageRate = 0.1;
 const mediterraneanVillageNames = ['Kavala', 'Pyrgos', 'Athanos', 'Aggelochori', 'Neri','Kostas', 'Agios Dionysis', 'Kore', 'Galati', 'Syrta', 'Abdera', 'Oreokastro', 'Negades', 
 'Agios Konstantinos', 'Frini', 'Infestiona', 'Athira', 'Anthrakia', 'Charkra', 'Tilos'];
 const jungleVillageNames = ['Nam', 'Katkoula', 'Savaka', 'Lailai', 'Cerebu', 'Laikoro', 'Namuvaka', 'Balavu', 'Tavu', 'Muaceba', 'Sosovu', 'Nani', 'Tuvanaka', 'Belfort',
-'Georgetown', 'Rasputin', 'Saint-Julien', 'Nicolet', 'Savu', 'La Rochelle', 'Tanouka'];
+'Georgetown', 'Saint-Julien', 'Nicolet', 'Savu', 'La Rochelle', 'Tanouka'];
 const easteuroVillageNames = ['Stary Sobor', 'Chernogorsk', 'Elektrozavodsk', 'Kamino'];
 
 let gameStarted;
@@ -222,9 +213,7 @@ let selectedFaction = "";
 let selectedGen;
 
 // Backdrop Image Variables
-let bArid1, bArid2, bArid3, bArid4, bArid5;
 let bJungle1, bJungle2, bJungle3, bJungle4, bJungle5;
-let bMediterranean1, bMediterranean2, bMediterranean3, bMediterranean4, bMediterranean5;
 
 // Town Images
 let mediTown;
@@ -236,11 +225,6 @@ let fiaPort, aafPort, natoPortM, csatPortM, napaPort, chdkzPort, cdfPort, afrfPo
 
 function preload() {
   // Preloading Backdrop Images
-  bArid1 = loadImage("assets/backdrops/arid1.png");
-  bArid2 = loadImage("assets/backdrops/arid2.png");
-  bArid3 = loadImage("assets/backdrops/arid3.png");
-  bArid4 = loadImage("assets/backdrops/arid4.png");
-  bArid5 = loadImage("assets/backdrops/arid5.png");
   bJungle1 = loadImage("assets/backdrops/jungle1.png");
   bJungle2 = loadImage("assets/backdrops/jungle2.png");
   bJungle3 = loadImage("assets/backdrops/jungle3.png");
@@ -270,7 +254,7 @@ function preload() {
   csatPortJ = loadImage("assets/leaders/tanoa/CSATJ.png");
   natoPortJ = loadImage("assets/leaders/tanoa/NATOJ.png");
 
-  // Preloading 
+  // Preloading Sounds
 }
 
 function getTwoDArray(x, y)
@@ -426,32 +410,17 @@ function drawTitle() {
 // Chooses a Random Backdrop
 function randomBackdrop()
 {
-  bDrop = floor(random(1, 11));
+  bDrop = floor(random(1, 6));
   if (bDrop === 1) {
-    image(bArid1, 0, 0, width, height);
-  }
-  else if (bDrop === 2) {
-    image(bArid2, 0, 0, width, height);
-  }
-  else if (bDrop === 3) {
-    image(bArid3, 0, 0, width, height);
-  }
-  else if (bDrop === 4) {
-    image(bArid4, 0, 0, width, height);
-  }
-  else if (bDrop === 5) {
-    image(bArid5, 0, 0, width, height);
-  }
-  else if (bDrop === 6) {
     image(bJungle1, 0, 0, width, height);
   }
-  else if (bDrop === 7) {
+  else if (bDrop === 2) {
     image(bJungle2, 0, 0, width, height);
   }
-  else if (bDrop === 8) {
+  else if (bDrop === 3) {
     image(bJungle5, 0, 0, width, height);
   }
-  else if (bDrop === 9) {
+  else if (bDrop === 4) {
     image(bJungle4, 0, 0, width, height);
   }
   else {
@@ -676,6 +645,7 @@ function mousePressed() {
   }
 }
 
+// Menu Screens for  Different World Types
 function infoScreen(world) {
   if (world === "altis")
   {
