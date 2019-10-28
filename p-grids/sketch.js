@@ -213,7 +213,7 @@ let selectedFaction = "";
 let selectedGen;
 
 // Backdrop Image Variables
-let bJungle1, bJungle2, bJungle3, bJungle4, bJungle5;
+let bJungle1, bJungle2;
 
 // Town Images
 let mediTown;
@@ -226,10 +226,7 @@ let fiaPort, aafPort, natoPortM, csatPortM, napaPort, chdkzPort, cdfPort, afrfPo
 function preload() {
   // Preloading Backdrop Images
   bJungle1 = loadImage("assets/backdrops/jungle1.png");
-  bJungle2 = loadImage("assets/backdrops/jungle2.png");
-  bJungle3 = loadImage("assets/backdrops/jungle3.png");
-  bJungle4 = loadImage("assets/backdrops/jungle4.png");
-  bJungle5 = loadImage("assets/backdrops/jungle5.png");
+  bJungle2 = loadImage("assets/backdrops/jungle3.png");
 
   // Preloading Town Images
   mediTown = loadImage("assets/buildings/mediVillage.png");
@@ -253,8 +250,6 @@ function preload() {
   hidfPort = loadImage("assets/leaders/tanoa/HIDF.png");
   csatPortJ = loadImage("assets/leaders/tanoa/CSATJ.png");
   natoPortJ = loadImage("assets/leaders/tanoa/NATOJ.png");
-
-  // Preloading Sounds
 }
 
 function getTwoDArray(x, y)
@@ -410,21 +405,12 @@ function drawTitle() {
 // Chooses a Random Backdrop
 function randomBackdrop()
 {
-  bDrop = floor(random(1, 6));
+  bDrop = floor(random(1, 3));
   if (bDrop === 1) {
     image(bJungle1, 0, 0, width, height);
   }
   else if (bDrop === 2) {
     image(bJungle2, 0, 0, width, height);
-  }
-  else if (bDrop === 3) {
-    image(bJungle5, 0, 0, width, height);
-  }
-  else if (bDrop === 4) {
-    image(bJungle4, 0, 0, width, height);
-  }
-  else {
-    image(bJungle5, 0, 0, width, height);
   }
 }
 
