@@ -5,69 +5,138 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let x;
-let y;
-let dx;
-let dy;
-let radius = 100;
-let rectSize = 100;
-let mode = "circle";
-
-function preload() {
-
-}
+let grid;
+let rows = 30;
+let cols = 30;
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  x = width/2;
-  y = height/2;
-  dx = random(-15, 15);
-  dy = random(-15, 15);
+  if (windowWidth > windowHeight) {
+    createCanvas(windowHeight, windowHeight);
+  }
+  else {
+    createCanvas(windowWidth, windowWidth);
+  }
+  grid = createRandom2dArray(cols, rows);
 }
 
-
 function draw() {
-  background(255);
-
-  moveShape();
-
-  if (mode === "circle") {
-    displayCircle();
-  }
-  if (mode === "rectangle") {
-    displayRectangle();
-  }
+  background(220);
+  displayGrid(grid, rows, cols);
+  update();
 }
 
 function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
+  if (windowWidth > windowHeight) {
+    createCanvas(windowHeight, windowHeight);
+  }
+  else {
+    createCanvas(windowWidth, windowWidth);
+  }
 }
 
-function moveShape() {
-  x += dx;
-  y += dy;
+function keyTyped() {
+  if (key === "r") {
+    grid = createRandom2dArray(cols, rows);
+  }
+  if (key === "c") {
+    grid = createEmptyGrid();
+  }
+  if (key === " ") {
+    update();
+  }
 }
 
-function displayCircle() {
-  //bounce if needed
-  if (x > width - radius/2 || x < 0 + radius/2) {
-    dx *= -1;
+function mousePressed() {
+  let cellSize = width/cols;
+
+  let xCoord = floor(mouseX / cellSize);
+  let yCoord = floor(mouseY / cellSize);
+  
+  if (grid[yCoord][xCoord] === 1) {
+    grid[yCoord][xCoord] = 0;
   }
-  if (y > height - radius/2 || y < 0 + radius/2) {
-    dy *= -1;
+  else {
+    grid[yCoord][xCoord] = 1;
   }
-  fill(0);
-  ellipse(x, y, radius, radius)
 }
 
-function displayRectangle() {
-  //bounce if needed
-  if (x > width - rectSize || x < 0) {
-    dx *= -1;
+function createEmptyGrid() {
+  let emptyGrid = [];
+  for(let x = 0; x < cols; x++) {
+    emptyGrid.push([]);
+    for(let y = 0; y < rows; y++) {
+      emptyGrid[x].push(0);
+    }
   }
-  if (y > height - rectSize || y < 0) {
-    dy *= -1;
+  return emptyGrid;
+}
+
+function update() {
+  let nextTurn = createEmptyGrid();
+
+  for(let x = 0; x < cols; x++) {
+    for(let y = 0; y < rows; y++) {
+      let neighbors = 0;
+
+      for(let i = - 1; i <= 1; i++) {
+        for(let j = - 1; j <= 1; j++) {
+          if (x+i >= 0 && x+i < cols && y+j >= 0 && y+j < rows) {
+            neighbors += grid[y+j][x+i];
+          }
+        }
+      }
+      // Dont count self
+      neighbors -= grid[y][x];
+
+      //apply rules!
+      if (grid[y][x] === 1) {
+        if (neighbors === 2 || neighbors === 3) {
+          nextTurn[y][x] = 1;
+        }
+        else {
+          nextTurn[y][x] = 0;
+        }
+      }
+      if (grid[y][x] === 0) {
+        if (neighbors === 3) {
+          nextTurn[y][x] = 1;
+        }
+        else {
+          nextTurn[y][x] = 0;
+        }
+      }
+    }
   }
-  fill(0);
-  rect(x, y, rectSize, rectSize);
+  grid = nextTurn;
+}
+
+function displayGrid(grid, rows, cols) {
+  let cellSize = width / cols;
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      if (grid[y][x] === 0) {
+        fill(255);
+      }
+      else {
+        fill(0);
+      }
+      rect(x*cellSize, y*cellSize, cellSize, cellSize);
+    }
+  }
+}
+
+function createRandom2dArray(cols, rows) {
+  let randomGrid = [];
+  for (let x = 0; x < cols; x++) {
+    randomGrid.push([]);
+    for (let y = 0; y < rows; y++) {
+      if (random(100) < 50) {
+        randomGrid[x].push(1);
+      }
+      else {
+        randomGrid[x].push(0);
+      }
+    }
+  }
+  return randomGrid;
 }
