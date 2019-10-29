@@ -79,7 +79,7 @@ class Sector // Template for a Sector
     else {
       fill(0, 0, 255);
     }
-    rect(this.position.x + plusX, this.position. y, this.size, this.size);
+    rect(this.position.x, this.position. y, this.size, this.size);
   }
 }
 
@@ -137,7 +137,6 @@ class Division
 }
 
 let sectors;
-let plusX;
 let cellSize;
 let currentSector;
 
@@ -187,7 +186,7 @@ function drawGUI() {
   // Left side of the GUI
   fill(0, 200, 200);
   noStroke();
-  rect(0, 0, plusX - 1, windowHeight)
+  rect(0, 0, 1, windowHeight)
   stroke(1);
   fill(0);
   textSize(20);
@@ -203,8 +202,8 @@ function drawGUI() {
 
 // Loads the Sectors on the Screen
 function loadSectors() {
-  for (let x = 0; x < 50; x++) {
-    for (let y = 0; y < 50; y++) {
+  for (let x = 0; x < 200; x++) {
+    for (let y = 0; y < 75; y++) {
       sectors[x][y].update();
     }
   }
@@ -217,19 +216,19 @@ function generateWorld() {
   let yoffset = random(-1000, 1000);
   let xoffsetReg = random(-1000, 1000);
   let yoffsetReg = random(-1000, 1000);
-  if (width >= height) {
-    cellSize = height/50;
-  }
-  else if (height > width) {
-    cellSize = width/50;
-  }
-  plusX = cellSize * 25;
-  for (let x = 0; x < 50; x++) {
-    for (let y = 0; y < 50; y++) {
+  // if (width >= height) {
+  //   cellSize = height/150;
+  // }
+  // else if (height > width) {
+  //   cellSize = width/150;
+  // }
+  cellSize = 9.6;
+  for (let x = 0; x < 200; x++) {
+    for (let y = 0; y < 75; y++) {
       let sectorVal = noise(x / 7 + xoffset, y / 7 + yoffset);
       let regionVal = noise(x / 7 + xoffsetReg, y / 7 + yoffsetReg);
       let sectorType;
-      if (regionVal < 0.5) {
+      if (regionVal < 0.4) {
         if (sectorVal < 0.3)
         {
           sectorType = 'forest';
@@ -247,23 +246,26 @@ function generateWorld() {
           sectorType = 'water';
         }
       }
-      else {
+      else if (regionVal < 0.6) {
         if (sectorVal < 0.3)
         {
-          sectorType = 'snow';
+          sectorType = 'jungle';
         }
         else if (sectorVal < 0.4)
         {
-          sectorType = 'forest';
+          sectorType = 'plains';
         }
         else if (sectorVal < 0.5)
         {
-          sectorType = 'plains';
+          sectorType = 'arid';
         }
         else
         {
           sectorType = 'water';
         }
+      }
+      else {
+          sectorType = 'snow';
     }
       sectors[x][y] = new Sector(new Vector2(x * cellSize, y * cellSize), cellSize, sectorType, random());
     }
@@ -271,7 +273,7 @@ function generateWorld() {
 }
 
 function startGame () {
-  sectors = getTwoDArray(50, 50);
+  sectors = getTwoDArray(200, 75);
   generateWorld();
 
   background(0, 200, 200);
@@ -282,7 +284,7 @@ function startGame () {
 
 function mousePressed() {
   if (gameStarted) {
-    let x = floor((mouseX - plusX) / cellSize);
+    let x = floor((mouseX) / cellSize);
     let y = floor(mouseY / cellSize);
     print("x: " + x + " y: " + y);
 
