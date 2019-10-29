@@ -65,13 +65,16 @@ class Sector // Template for a Sector
       fill(34,139,34);
     }
     else if (this.landType === "arid") {
-      fill(210, 180, 140);
+      fill(222,184,135);
     }
     else if (this.landType === "jungle") {
       fill(0, 100, 0);
     }
     else if (this.landType === "wetlands") {
       fill(107,142,35);
+    }
+    else if (this.landType === "snow") {
+      fill(255);
     }
     else {
       fill(0, 0, 255);
@@ -212,6 +215,8 @@ function loadSectors() {
 function generateWorld() {
   let xoffset = random(-1000, 1000);
   let yoffset = random(-1000, 1000);
+  let xoffsetReg = random(-1000, 1000);
+  let yoffsetReg = random(-1000, 1000);
   if (width >= height) {
     cellSize = height/50;
   }
@@ -222,23 +227,44 @@ function generateWorld() {
   for (let x = 0; x < 50; x++) {
     for (let y = 0; y < 50; y++) {
       let sectorVal = noise(x / 7 + xoffset, y / 7 + yoffset);
+      let regionVal = noise(x / 7 + xoffsetReg, y / 7 + yoffsetReg);
       let sectorType;
-      if (sectorVal < 0.45)
-      {
-        sectorType = 'forest';
+      if (regionVal < 0.5) {
+        if (sectorVal < 0.3)
+        {
+          sectorType = 'forest';
+        }
+        else if (sectorVal < 0.4)
+        {
+          sectorType = 'plains';
+        }
+        else if (sectorVal < 0.5)
+        {
+          sectorType = 'arid';
+        }
+        else
+        {
+          sectorType = 'water';
+        }
       }
-      else if (sectorVal < 0.6)
-      {
-        sectorType = 'plains';
-      }
-      else if (sectorVal < 0.65)
-      {
-        sectorType = 'arid';
-      }
-      else
-      {
-        sectorType = 'water';
-      }
+      else {
+        if (sectorVal < 0.3)
+        {
+          sectorType = 'snow';
+        }
+        else if (sectorVal < 0.4)
+        {
+          sectorType = 'forest';
+        }
+        else if (sectorVal < 0.5)
+        {
+          sectorType = 'plains';
+        }
+        else
+        {
+          sectorType = 'water';
+        }
+    }
       sectors[x][y] = new Sector(new Vector2(x * cellSize, y * cellSize), cellSize, sectorType, random());
     }
   }
