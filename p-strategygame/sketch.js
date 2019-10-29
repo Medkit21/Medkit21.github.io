@@ -1,8 +1,6 @@
-// Overthrow(State Variable Project)
+// Strategy Game Concept
 // Therrill Strongarm
 // September 11, 2019
-//
-// Also I feel like I went all in on this and I dont feel like I'll have enough for the Grids assignment
 //
 // Extra for Experts:
 // Classes
@@ -44,7 +42,7 @@ class Vector2
 
 class Sector // Template for a Sector
 {
-  constructor(position, size, landType, villageChance)
+  constructor(position, size, landType)
   {
     this.position = position;
     this.size = size;
@@ -53,45 +51,6 @@ class Sector // Template for a Sector
     this.defence;
     this.attack;
     this.landType = landType;
-    // Determines the chance of a village spawning based on the Sector Type
-    if (this.landType == 'water')
-    {
-      villageChance = 1; 
-    }
-    else if (this.landType == 'arid')
-    {
-    villageChance *= 3;
-    }
-    else if (this.landType == 'plains')
-    {
-    villageChance *= 2;
-    }
-    else if (this.landType == 'forest')
-    {
-    villageChance *= 2;
-    }
-    else if (this.landType == 'jungle')
-    {
-    villageChance *= 5;
-    }
-    this.isVillage = villageChance < villageRate;
-
-    // If there is a village grab the names of the village/town based on the world generation type
-    if (this.isVillage)
-    {
-      if (generationType === "normal")
-      {
-        this.villageName = mediterraneanVillageNames[floor(random(0, mediterraneanVillageNames.length))];
-      }
-      else if (generationType === "arid")
-      {
-        this.villageName = aridVillageNames[floor(random(0, aridVillageNames.length))];
-      }
-      else if (generationType === "jungle")
-      {
-        this.villageName = jungleVillageNames[floor(random(0, jungleVillageNames.length))];
-      }
-    }
   }
   update()
   {
@@ -118,23 +77,51 @@ class Sector // Template for a Sector
       fill(0, 0, 255);
     }
     rect(this.position.x + plusX, this.position. y, this.size, this.size);
+  }
+}
 
-    if(this.isVillage)
+class Nation 
+{
+  constructor(name, isPuppet)
+  {
+    this.name = name;
+    this.isPuppet = isPuppet;
+    this.setGovernment;
+
+    // Ideology Percentages
+    this.democracy;
+    this.natPop;
+    this.syndicalism;
+    this.monarchism
+
+    if(this.isPuppet) 
     {
-      fill(200, 80, 10);
-      triangle(this.position.x + plusX, this.position.y + this.size,
-        this.position.x + plusX + this.size, this.position.y + this.size,
-        this.position.x + plusX + this.size/2, this.position.y)
+      this.ideologyAssignment(puppetMasterIdeology);
+    }
+    else
+    {
+      this.ideologyAssignment("rand");
+    }
+  }
+  ideologyAssignment(newIdeology) // This will only ever be called once at the beginning or the formation of new Nations
+  {
+    this.
+    this.newIdeology = newIdeology;
+    if (newIdeology === "rand") {
+      this.ideology = floor(random(1, 101));
+      if (this.ideology <= 25) {
+        this.setGovernment = "democracy";
+        this.democracy = (floor(random(50, 61)));
+      }
     }
   }
 }
 
-class Units {
-  constructor(hp, atk, def)
+class Division
+{
+  constructor(hp)
   {
     this.hp = hp;
-    this.atk = atk;
-    this.def = def;
   }
   update()
   {
@@ -149,46 +136,17 @@ class Units {
 let sectors;
 let plusX;
 let cellSize;
-let selectedSector = "";
 let currentSector;
-let sectorColor = 0;
-
-// Factions
-let BLUFOR; // Factions such as NATO, CTRG, Gendarmerie, etc
-let INDEP; // Factions such as AAF, FIA, Syndikat, CDF, etc
-let OPFOR; // Factions such as CSAT, AFRF, ChDkZ, TKM, etc
-
-const villageRate = 0.1;
-
-// Town names based on the World Generation Type
-const mediterraneanVillageNames = ['Kavala', 'Pyrgos', 'Athanos', 'Aggelochori', 'Neri','Kostas', 'Agios Dionysis', 'Kore', 'Galati', 'Syrta', 'Abdera', 'Oreokastro', 'Negades', 
-'Agios Konstantinos', 'Frini', 'Infestiona', 'Athira', 'Anthrakia', 'Charkra', 'Tilos'];
-const aridVillageNames = ['Pazagbasi', 'Durocalar', 'Tabashahr', 'Kashavand', 'Tel Kemaniyah', 'Muqdatha', 'Safabin', 'Aswaria'];
-const jungleVillageNames = ['Nam', 'Katkoula', 'Savaka', 'Lailai', 'Cerebu', 'Laikoro', 'Namuvaka', 'Balavu', 'Tavu', 'Muaceba', 'Sosovu', 'Nani', 'Tuvanaka', 'Belfort',
-'Georgetown', 'Rasputin', 'Saint-Julien', 'Nicolet', 'Savu', 'La Rochelle', 'Tanouka', 'Kawacatoose']
-const westernVillageNames = ['Obamaville', 'Timsville', 'Schellenburg', 'Kuffnersville'];
 
 let gameStarted;
 let menuScreen = "main";
 let generationType = "";
 
-// Backdrop Image Variables
-let bArid1, bArid2, bArid3, bArid4, bArid5;
-let bJungle1, bJungle2, bJungle3, bJungle4, bJungle5;
-let bMediterranean1, bMediterranean2, bMediterranean3, bMediterranean4, bMediterranean5;
+// Symbols
+let nationalFocus;
 
 function preload() {
-  // Preloading Backdrop Images
-  bArid1 = loadImage("assets/backdrops/arid1.png");
-  bArid2 = loadImage("assets/backdrops/arid2.png");
-  bArid3 = loadImage("assets/backdrops/arid3.png");
-  bArid4 = loadImage("assets/backdrops/arid4.png");
-  bArid5 = loadImage("assets/backdrops/arid5.png");
-  bJungle1 = loadImage("assets/backdrops/jungle1.png");
-  bJungle2 = loadImage("assets/backdrops/jungle2.png");
-  bJungle3 = loadImage("assets/backdrops/jungle3.png");
-  bJungle4 = loadImage("assets/backdrops/jungle4.png");
-  bJungle5 = loadImage("assets/backdrops/jungle5.png");
+  nationalFocus = loadImage("assets/nationalFocus.png");
 }
 
 function getTwoDArray(x, y)
@@ -204,19 +162,15 @@ function getTwoDArray(x, y)
 function setup() {
   createCanvas(windowWidth, windowHeight);
   background(0, 200, 200);
-  randomBackdrop();
 
-  gameStarted = false;
+  gameStarted = true;
+  generationType = "normal"
+  startGame();
 }
 
 
 function draw() {
-  if (gameStarted) {
-    drawGUI();
-  }
-  else {
-    drawTitle();
-  }
+  drawGUI();
 }
 
 function windowResized() {
@@ -235,118 +189,13 @@ function drawGUI() {
   fill(0);
   textSize(20);
   textAlign(LEFT);
-  text("SELECTED SECTOR", width/20, height/20);
-  fill(sectorColor);
-  rectMode(CORNER);
-  rect(width/20 + 40, height/20 + 30, 100, 100);
-  fill(0);
-  textAlign(CENTER);
-  text(selectedSector, width/20 + 90, height/20 + 160);
-  if (currentSector != undefined && currentSector.isVillage) {
-    text("Town: " + currentSector.villageName, width/20 + 90, height/20 + 200);
-  }
-  // Right Side of the GUI
-  fill(0, 150, 150);
-  rectMode(CENTER);
-  rect(width - 200, 100, 300, 70);
+  fill(105,105,105);
+  rect(width - 355, 25, 325, 75);
+  imageMode(LEFT);
+  image(nationalFocus, width - 350, 35, 50, 50)
   fill(255);
-  text("Click on the grids/sectors", width - 200, 100);
-  fill(100, 0, 0);
-  rectMode(CORNER);
-  rect(width - 300, height - 70, 200, 50);
-  fill(255);
-  text("Regenerate World", width - 200, height - 40);
-  fill(0);
-}
-
-// Draws the Title Screen
-function drawTitle() {
-  // Main Menu Screen(Opening Screen)
-  if (menuScreen === "main") {
-    textAlign(CENTER);
-    textSize(50);
-    fill(255);
-    text("Overthrow", width/2, height/15);
-  
-    rectMode(CENTER);
-    fill(150, 0, 0);
-    rect(windowWidth/2, windowHeight/2 - 100, 400, 150);
-    textAlign(CENTER);
-    textSize(50);
-    fill(0);
-    text("Start Game", windowWidth/2, windowHeight/2 - 90)
-    rectMode(CORNER);
-  }
-  // Menu Screen for the World Generation
-  if (menuScreen === "worldgen") {
-    textAlign(CENTER);
-    textSize(50);
-    fill(255);
-    text("World Generation Type", width/2, height/15);
-  
-    rectMode(CENTER);
-    fill(150, 0, 0);
-    rect(windowWidth/2 - 500, windowHeight/2, 400, 150);
-    textAlign(CENTER);
-    textSize(50);
-    fill(0);
-    text("Mediterranean", windowWidth/2 - 500, windowHeight/2 + 10)
-    rectMode(CORNER);
-
-    rectMode(CENTER);
-    fill(150, 0, 0);
-    rect(windowWidth/2, windowHeight/2, 400, 150);
-    textAlign(CENTER);
-    textSize(50);
-    fill(0);
-    text("Arid", windowWidth/2, windowHeight/2 + 10)
-    rectMode(CORNER);
-    
-    rectMode(CENTER);
-    fill(150, 0, 0);
-    rect(windowWidth/2 + 500, windowHeight/2, 400, 150);
-    textAlign(CENTER);
-    textSize(50);
-    fill(0);
-    text("Jungle", windowWidth/2 + 500, windowHeight/2 + 10)
-    rectMode(CORNER);
-  }
-}
-
-// Chooses a Random Backdrop
-function randomBackdrop()
-{
-  bDrop = floor(random(1, 11));
-  if (bDrop === 1) {
-    image(bArid1, 0, 0, width, height);
-  }
-  else if (bDrop === 2) {
-    image(bArid2, 0, 0, width, height);
-  }
-  else if (bDrop === 3) {
-    image(bArid3, 0, 0, width, height);
-  }
-  else if (bDrop === 4) {
-    image(bArid4, 0, 0, width, height);
-  }
-  else if (bDrop === 5) {
-    image(bArid5, 0, 0, width, height);
-  }
-  else if (bDrop === 6) {
-    image(bJungle1, 0, 0, width, height);
-  }
-  else if (bDrop === 7) {
-    image(bJungle2, 0, 0, width, height);
-  }
-  else if (bDrop === 8) {
-    image(bJungle5, 0, 0, width, height);
-  }
-  else if (bDrop === 9) {
-    image(bJungle4, 0, 0, width, height);
-  }
-  else {
-    image(bJungle5, 0, 0, width, height);
-  }
+  text("NO NATIONAL", width - 280, 60);
+  text("FOCUS SELECTED", width - 280, 80);
 }
 
 // Loads the Sectors on the Screen
@@ -374,75 +223,21 @@ function generateWorld() {
     for (let y = 0; y < 50; y++) {
       let sectorVal = noise(x / 7 + xoffset, y / 7 + yoffset);
       let sectorType;
-
-      // Mediterranean Generation
-      if (generationType === "normal") {
-        if (sectorVal < 0.2)
-        {
-          sectorType = 'jungle';
-        }
-        else if (sectorVal < 0.4)
-        {
-          sectorType = 'forest';
-        }
-        else if (sectorVal < 0.5)
-        {
-          sectorType = 'plains';
-        }
-        else if (sectorVal < 0.58)
-        {
-          sectorType = 'arid';
-        }
-        else
-        {
-          sectorType = 'water';
-        }
+      if (sectorVal < 0.45)
+      {
+        sectorType = 'forest';
       }
-      // Arid/Desert Generation
-      if (generationType === "arid") {
-        if (sectorVal < 0.2)
-        {
-          sectorType = 'forest';
-        }
-        else if (sectorVal < 0.25)
-        {
-          sectorType = 'plains';
-        }
-        else if (sectorVal < 0.65)
-        {
-          sectorType = 'arid';
-        }
-        else if (sectorVal < 0.7)
-        {
-          sectorType = 'wetlands';
-        }
-        else
-        {
-          sectorType = 'water';
-        }
+      else if (sectorVal < 0.6)
+      {
+        sectorType = 'plains';
       }
-      // Jungle Generation
-      if (generationType === "jungle") {
-        if (sectorVal < 0.4)
-        {
-          sectorType = 'jungle';
-        }
-        else if (sectorVal < 0.5)
-        {
-          sectorType = 'forest';
-        }
-        else if (sectorVal < 0.60)
-        {
-          sectorType = 'wetlands';
-        }
-        else if (sectorVal < 0.62)
-        {
-          sectorType = 'arid';
-        }
-        else
-        {
-          sectorType = 'water';
-        }
+      else if (sectorVal < 0.65)
+      {
+        sectorType = 'arid';
+      }
+      else
+      {
+        sectorType = 'water';
       }
       sectors[x][y] = new Sector(new Vector2(x * cellSize, y * cellSize), cellSize, sectorType, random());
     }
@@ -469,74 +264,21 @@ function mousePressed() {
       currentSector = sectors[x][y];
       if (sectors[x][y].landType === "plains") {
         print("This is a plains sector");
-        selectedSector = "Plains Sector";
-        sectorColor = [0,200,0];
       }
       else if (sectors[x][y].landType === "forest") {
         print("This is a forest sector");
-        selectedSector = "Forest Sector";
-        sectorColor = [34,139,34];
       }
       else if (sectors[x][y].landType === "arid") {
-        print("This is a arid sector");
-        selectedSector = "Arid Sector";
-        sectorColor = [210, 180, 140];
+        print("This is a beach sector");
       }
       else if (sectors[x][y].landType === "jungle") {
         print("This is a jungle sector");
-        selectedSector = "Jungle Sector";
-        sectorColor = [0, 100, 0];
       }
       else if (sectors[x][y].landType === "wetlands") {
         print("This is a wetlands sector");
-        selectedSector = "Wetlands Sector";
-        sectorColor = [107,142,35];
       }
       else {
         print("this is not land");
-        selectedSector = "Water Sector";
-        sectorColor = [0, 0, 255];
-      }
-    }
-
-    else if (mouseIsPressed) {
-      if (mouseX > width - 300 && mouseX < width - 100 && mouseY > height - 70 && mouseY < height - 20) {
-        gameStarted = false;
-        randomBackdrop();
-      }
-    }
-  }
-  else {
-    if (menuScreen === "main") {
-      // Start Game Button
-      if (mouseIsPressed) {
-        if (mouseX > width/2 - 200 && mouseX < width/2 + 200 && mouseY > height/2 - 100 - 75 && mouseY < height/2 - 100 + 75) {
-          menuScreen = "worldgen";
-          randomBackdrop();
-        }
-      }
-    }
-    else if (menuScreen === "worldgen") {
-      // Mediterranean Button
-      if (mouseIsPressed) {
-        if (mouseX > width/2 - 500 - 200 && mouseX < width/2 - 500 + 200 && mouseY > height/2- 75 && mouseY < height/2 + 75) {
-          generationType = "normal"
-          startGame();
-        }
-      }
-      // Arid Button
-       if (mouseIsPressed) {
-        if (mouseX > width/2 - 200 && mouseX < width/2 + 200 && mouseY > height/2- 75 && mouseY < height/2 + 75) {
-          generationType = "arid";
-          startGame();
-        }
-      }
-      // Jungle Button
-       if (mouseIsPressed) {
-        if (mouseX > width/2 + 500 - 200 && mouseX < width/2 + 500 + 200 && mouseY > height/2- 75 && mouseY < height/2 + 75) {
-          generationType = "jungle";
-          startGame();
-        }
       }
     }
   }
