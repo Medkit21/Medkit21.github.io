@@ -46,10 +46,21 @@ class Sector // Template for a Sector
   {
     this.position = position;
     this.size = size;
-    this.development;
+    this.infrastructure;
+    this.defense;
     this.manpower;
-    this.defence;
-    this.attack;
+    this.buildLimit;
+
+    // Defense Buildables
+    this.landForts; // Land Forts (0 - 10) | These increase a Sector's Defense against land units(infantry, tanks, etc.)
+    this.waterForts; // Water Forts/Coastal Forts (0 - 5) | These increase a Sector's Defense against Naval Invasions.
+    this.antiAir; // Anti Air Guns(AA Guns) (0 - 5) | These increase your Air Superiority and decreases your enemy's (It also destroys enemy aircraft.)
+    this.airbases; // Airbases/Airports (0 - 6) | Where planes are stored and deployed from.
+    this.navalPorts; // Naval Ports (0 = 6) | Where Naval Units are stored and deployed from.
+    this.navalDockyard; // Naval Dockyards (0 - Build Limit) | These are used to build Naval Units(Submarines, Convoys, Destroyers, Carriers, etc.)
+    this.civFactories; // Civilian Factories (0 - Build Limit) | These are used to build buildings and manage trades. (Military Factories, Land Forts, etc.)
+    this.milFactories; // Military Factories (0 - Build Limit) | These are used to produce equipment(Guns, Vehicles, Tanks, Artillery, Planes, etc.).
+
     this.landType = landType;
   }
   update()
@@ -87,6 +98,7 @@ class Nation
     this.name = name;
     this.isPuppet = isPuppet;
     this.setGovernment;
+    this.puppetMasterIdeology;
 
     // Ideology Percentages
     this.democracy;
@@ -114,6 +126,14 @@ class Nation
         this.democracy = (floor(random(50, 61)));
       }
     }
+  }
+  update()
+  {
+    this.render();
+  }
+  render()
+  {
+
   }
 }
 
