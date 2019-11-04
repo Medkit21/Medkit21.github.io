@@ -81,9 +81,6 @@ class Sector // Template for a Sector
     else if (this.landType === "jungle") {
       fill(0, 100, 0);
     }
-    else if (this.landType === "wetlands") {
-      fill(107,142,35);
-    }
     else {
       fill(0, 0, 255);
     }
@@ -104,7 +101,23 @@ class Nation
     this.democracy;
     this.natPop;
     this.syndicalism;
-    this.monarchism
+    this.monarchism;
+
+    // Nation Stats
+    this.politicalPower; // Politcal Power is used for decisions and national focuses
+    this.stability;
+    this.warSupport; // How much the population supports the war | Higher war support will generate higher manpower
+    this.manpower; // Displays how much of the population is recruitable
+    this.numOfFactories; // Displays the number of total factories you control
+    this.fuel; // Displays how much fuel you have
+
+    // Nation Resources
+    this.ideology; // Converted into Fuel for the Nation
+    this.aluminum; // Used for Aircraft and Support Equipment
+    this.rubber; // Used for Aircraft, Motorized and Mechanized Vehicles, and Artillery
+    this.tungsten; // Used for Artillery, Medium Tanks, Light and Medium SP Artillery, Tank Destroyers, Medium SP Anti-Air and Jet Aircraft
+    this.steel; // Used for Infantry Weapons and Support Equipment, Artillery, Anti-air, Anti-tank, Ships, Tanks and Motorized/Mechanized Vehicles
+    this.chromium; // Used for Heavy and Super Heavy Tanks, Large Ships and Level 4 Small Ships
 
     if(this.isPuppet) 
     {
@@ -117,13 +130,36 @@ class Nation
   }
   ideologyAssignment(newIdeology) // This will only ever be called once at the beginning or the formation of new Nations
   {
-    this.
     this.newIdeology = newIdeology;
     if (newIdeology === "rand") {
       this.ideology = floor(random(1, 101));
       if (this.ideology <= 25) {
         this.setGovernment = "democracy";
-        this.democracy = (floor(random(50, 61)));
+        this.democracy = floor(random(50, 61));
+        this.natPop = floor(random(0 - this.democracy));
+        this.syndicalism = floor(random(0 - this.natPop));
+        this.monarchism = floor(random(this.syndicalism - 1));
+      }
+      else if (this.ideology <= 50) {
+        this.setGovernment = "natpop";
+        this.natPop = floor(random(50, 61));
+        this.democracy = floor(random(0 - this.natPop));
+        this.syndicalism = floor(random(0 - this.democracy));
+        this.monarchism = floor(random(this.syndicalism - 1));
+      }
+      else if (this.ideology <= 75) {
+        this.setGovernment = "syndicalism";
+        this.syndicalism = floor(random(50, 61));
+        this.democracy = floor(random(0 - this.syndicalism));
+        this.natPop = floor(random(0 - this.democracy));
+        this.monarchism = floor(random(this.natPop - 1));
+      }
+      else {
+        this.setGovernment = "monarchism";
+        this.monarchism = floor(random(50, 61));
+        this.democracy = floor(random(0 - this.monarchism));
+        this.natPop = floor(random(0 - this.democracy));
+        this.syndicalism = floor(random(this.natPop - 1));
       }
     }
   }
@@ -137,7 +173,63 @@ class Nation
   }
 }
 
-class Division
+class Division // Land Units (Infantry, Cavalry, Tanks, etc)
+{
+  constructor(mp)
+  {
+    this.mp = mp;
+    this.organization;
+    this.attack;
+    this.def;
+  }
+  update()
+  {
+    this.render();
+  }
+  render()
+  {
+    // Nothing here yet!
+  }
+}
+
+class General // Generals
+{
+  constructor(lvl, attack, defense, strategy, supply, isFieldMarshal)
+  {
+    this.lvl = lvl; // Their Level overall (0-10)
+    this.attack = attack; // Their Attack Level (0-5)
+    this.defense = defense; // Their Defense Level (0-5)
+    this.strategy = strategy; // Their Strategy (0-5)
+    this.supply = supply; // Their Fuel Management (0-5)
+    this.isFieldMarshal = isFieldMarshal; // Determines whether it's a Field Marshal or a General
+  }
+  update()
+  {
+    this.render();
+  }
+  render()
+  {
+    // Nothing here yet!
+  }
+}
+
+class Aircraft // Air Units (Fighters, Bombers, CAS, Naval Bombers, Transports, etc)
+{
+  constructor(hp)
+  {
+    this.hp = hp;
+  }
+  update()
+  {
+    this.render();
+  }
+  render()
+  {
+    // Nothing here yet!
+  }
+}
+
+class Navalcraft // Naval Units (U-Boats, Submarines, Destroyers, Cruisers, Convoys, etc)
 {
   constructor(hp)
   {
@@ -293,9 +385,6 @@ function mousePressed() {
       }
       else if (sectors[x][y].landType === "jungle") {
         print("This is a jungle sector");
-      }
-      else if (sectors[x][y].landType === "wetlands") {
-        print("This is a wetlands sector");
       }
       else {
         print("this is not land");
