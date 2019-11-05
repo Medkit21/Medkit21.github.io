@@ -100,7 +100,7 @@ class Nation
     // Ideology Percentages
     this.democracy;
     this.natPop;
-    this.syndicalism;
+    this.communism;
     this.monarchism;
 
     // Nation Stats
@@ -137,20 +137,20 @@ class Nation
         this.setGovernment = "democracy";
         this.democracy = floor(random(50, 61));
         this.natPop = floor(random(0 - this.democracy));
-        this.syndicalism = floor(random(0 - this.natPop));
-        this.monarchism = floor(random(this.syndicalism - 1));
+        this.communism = floor(random(0 - this.natPop));
+        this.monarchism = floor(random(this.communism - 1));
       }
       else if (this.ideology <= 50) {
         this.setGovernment = "natpop";
         this.natPop = floor(random(50, 61));
         this.democracy = floor(random(0 - this.natPop));
-        this.syndicalism = floor(random(0 - this.democracy));
-        this.monarchism = floor(random(this.syndicalism - 1));
+        this.communism = floor(random(0 - this.democracy));
+        this.monarchism = floor(random(this.communism - 1));
       }
       else if (this.ideology <= 75) {
-        this.setGovernment = "syndicalism";
-        this.syndicalism = floor(random(50, 61));
-        this.democracy = floor(random(0 - this.syndicalism));
+        this.setGovernment = "communism";
+        this.communism = floor(random(50, 61));
+        this.democracy = floor(random(0 - this.communism));
         this.natPop = floor(random(0 - this.democracy));
         this.monarchism = floor(random(this.natPop - 1));
       }
@@ -159,7 +159,7 @@ class Nation
         this.monarchism = floor(random(50, 61));
         this.democracy = floor(random(0 - this.monarchism));
         this.natPop = floor(random(0 - this.democracy));
-        this.syndicalism = floor(random(this.natPop - 1));
+        this.communism = floor(random(this.natPop - 1));
       }
     }
   }
@@ -196,11 +196,11 @@ class General // Generals
 {
   constructor(lvl, attack, defense, strategy, supply, isFieldMarshal)
   {
-    this.lvl = lvl; // Their Level overall (0-10)
-    this.attack = attack; // Their Attack Level (0-5)
-    this.defense = defense; // Their Defense Level (0-5)
-    this.strategy = strategy; // Their Strategy (0-5)
-    this.supply = supply; // Their Fuel Management (0-5)
+    this.lvl = lvl; // Their Level overall (0-10) | Field Marshall's Max Level is 15
+    this.attack = attack; // Their Attack Level (0-5) | Field Marshall (0-7)
+    this.defense = defense; // Their Defense Level (0-5) | Field Marshall (0-7)
+    this.strategy = strategy; // Their Strategy (0-5) | Field Marshall (0-7)
+    this.supply = supply; // Their Fuel Management (0-5) | Field Marshall (0-7)
     this.isFieldMarshal = isFieldMarshal; // Determines whether it's a Field Marshal or a General
   }
   update()
@@ -322,8 +322,13 @@ function loadSectors() {
 
 // Generates the World
 function generateWorld() {
-  let xoffset = random(-1000, 1000);
-  let yoffset = random(-1000, 1000);
+  // let xoffset = random(-1000, 1000);
+  // let yoffset = random(-1000, 1000);
+  let xoffset = -457.95569479042;
+  let yoffset = 146.06481880215802;
+  noiseSeed(1); // Knock off Europe
+  // noiseSeed(190309498);
+  console.log(xoffset, yoffset);
   if (width >= height) {
     cellSize = height/50;
   }
@@ -335,26 +340,30 @@ function generateWorld() {
     for (let y = 0; y < 50; y++) {
       let sectorVal = noise(x / 7 + xoffset, y / 7 + yoffset);
       let sectorType;
-      if (sectorVal < 0.45)
+      if (sectorVal < 0.35)
       {
-        sectorType = 'forest';
+        sectorType = 'water';
       }
-      else if (sectorVal < 0.6)
-      {
-        sectorType = 'plains';
-      }
-      else if (sectorVal < 0.65)
+      else if (sectorVal < 0.4)
       {
         sectorType = 'arid';
       }
+      else if (sectorVal < 0.55)
+      {
+        sectorType = 'plains';
+      }
       else
       {
-        sectorType = 'water';
+        sectorType = 'forest';
       }
       sectors[x][y] = new Sector(new Vector2(x * cellSize, y * cellSize), cellSize, sectorType, random());
     }
   }
 }
+
+// for every single sectors (IF ANYONE IS SEEING THIS IGNORE THIS)
+//   if sectors.x > half - a little || sectors.x < half + a little
+//     sectors.height -= 1 / (sectors.x - half) 
 
 function startGame () {
   sectors = getTwoDArray(50, 50);
@@ -390,5 +399,11 @@ function mousePressed() {
         print("this is not land");
       }
     }
+  }
+}
+
+function keyPressed() {
+  if (keyCode === RIGHT_ARROW) {
+    print("YATE");
   }
 }
