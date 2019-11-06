@@ -50,6 +50,7 @@ class Sector // Template for a Sector
     this.defense;
     this.manpower;
     this.buildLimit;
+    this.currentDivision = null;
 
     // Defense Buildables
     this.landForts; // Land Forts (0 - 10) | These increase a Sector's Defense against land units(infantry, tanks, etc.)
@@ -66,6 +67,10 @@ class Sector // Template for a Sector
   update()
   {
     this.render();
+    if (this.currentDivision != null)
+    {
+      this.currentDivision.update();
+    }
   }
   render()
   {
@@ -175,12 +180,16 @@ class Nation
 
 class Division // Land Units (Infantry, Cavalry, Tanks, etc)
 {
-  constructor(mp)
+  constructor(cellSize, size, mp, index)
   {
+    this.position = index.multiply(cellSize);
+    this.size = size;
     this.mp = mp;
     this.organization;
     this.attack;
-    this.def;
+    this.defense;
+
+    sectors[index.x][index.y].currentDivision = this;
   }
   update()
   {
@@ -188,7 +197,8 @@ class Division // Land Units (Infantry, Cavalry, Tanks, etc)
   }
   render()
   {
-    // Nothing here yet!
+    fill(0, 255, 255)
+    rect(this.position.x + plusX + 4, this.position.y + 4, this.size, this.size);
   }
 }
 
@@ -249,6 +259,7 @@ let sectors;
 let plusX;
 let cellSize;
 let currentSector;
+let divisions = [];
 
 let gameStarted;
 let menuScreen = "main";
@@ -358,6 +369,11 @@ function generateWorld() {
       }
       sectors[x][y] = new Sector(new Vector2(x * cellSize, y * cellSize), cellSize, sectorType, random());
     }
+  }
+
+  for (let i = 0; i < 30; i++)
+  {
+    divisions.push(new Division(cellSize, cellSize / 2, cellSize / 2, new Vector2(floor(random(0, 50)), floor(random(0, 50)))));
   }
 }
 
