@@ -182,23 +182,44 @@ class Division // Land Units (Infantry, Cavalry, Tanks, etc)
 {
   constructor(cellSize, size, mp, index)
   {
-    this.position = index.multiply(cellSize);
+    this.cellSize = cellSize;
+    //this.position = index.multiply(cellSize);
     this.size = size;
     this.mp = mp;
     this.organization;
     this.attack;
     this.defense;
+    this.index = index;
 
-    sectors[index.x][index.y].currentDivision = this;
+    if (sectors[index.x][index.y].landType !== "water") {
+      sectors[index.x][index.y].currentDivision = this;
+    }
   }
   update()
   {
     this.render();
   }
+  action()
+  {
+    this.move(floor(random(-1, 2)), floor(random(-1, 2)));
+    this.render();
+  }
   render()
   {
     fill(0, 255, 255)
-    rect(this.position.x + plusX + 4, this.position.y + 4, this.size, this.size);
+    rect(this.index.x * this.cellSize + plusX + 4, this.index.y * this.cellSize + 4, this.size, this.size);
+  }
+  move(x, y)
+  {
+    if (this.index.x + x >= 0 && this.index.x + x < 50 && this.index.y + y >= 0 && this.index.y + y < 50 )
+    {
+      sectors[this.index.x][this.index.y].currentDivision = null;
+      sectors[this.index.x][this.index.y].update();
+      this.index.x += x;
+      this.index.y += y;
+      sectors[this.index.x][this.index.y].currentDivision = this;
+      sectors[this.index.x][this.index.y].update();
+    }
   }
 }
 
@@ -371,9 +392,9 @@ function generateWorld() {
     }
   }
 
-  for (let i = 0; i < 30; i++)
+  for (let i = 0; i < 100; i++)
   {
-    divisions.push(new Division(cellSize, cellSize / 2, cellSize / 2, new Vector2(floor(random(0, 50)), floor(random(0, 50)))));
+    divisions.push(new Division(cellSize, cellSize / 2, 1000, new Vector2(floor(random(0, 50)), floor(random(0, 50)))));
   }
 }
 
@@ -420,6 +441,9 @@ function mousePressed() {
 
 function keyPressed() {
   if (keyCode === RIGHT_ARROW) {
-    print("YATE");
+    for (let i = 0; i < divisions.length; i++)
+    {
+      divisions[i].action();
+    }
   }
 }
