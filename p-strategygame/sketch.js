@@ -199,10 +199,24 @@ class Division // Land Units (Infantry, Cavalry, Tanks, etc)
   {
     this.render();
   }
-  action()
+  action(direction)
   {
-    this.move(floor(random(-1, 2)), floor(random(-1, 2)));
-    this.render();
+    if (direction === "up") {
+      this.move(0, -1);
+      this.render();
+    }
+    else if (direction === "down") {
+      this.move(0, 1);
+      this.render();
+    }
+    else if (direction === "left") {
+      this.move(-1, 0);
+      this.render();
+    }
+    else if (direction === "right") {
+      this.move(1, 0);
+      this.render();
+    }
   }
   render()
   {
@@ -358,8 +372,8 @@ function generateWorld() {
   // let yoffset = random(-1000, 1000);
   let xoffset = -457.95569479042;
   let yoffset = 146.06481880215802;
-  noiseSeed(1); // Knock off Europe
-  // noiseSeed(190309498);
+  // noiseSeed(1); // Knock off Europe
+  noiseSeed(29);
   console.log(xoffset, yoffset);
   if (width >= height) {
     cellSize = height/50;
@@ -443,7 +457,25 @@ function keyPressed() {
   if (keyCode === RIGHT_ARROW) {
     for (let i = 0; i < divisions.length; i++)
     {
-      divisions[i].action();
+      divisions[i].action("right");
+    }
+  }
+  else if (keyCode === LEFT_ARROW) {
+    for (let i = 0; i < divisions.length; i++)
+    {
+      divisions[i].action("left");
+    }
+  }
+  else if (keyCode === UP_ARROW) {
+    for (let i = 0; i < divisions.length; i++)
+    {
+      divisions[i].action("up");
+    }
+  }
+  else if (keyCode === DOWN_ARROW) {
+    for (let i = 0; i < divisions.length; i++)
+    {
+      divisions[i].action("down");
     }
   }
 }
